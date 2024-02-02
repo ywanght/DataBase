@@ -1,0 +1,5137 @@
+SELECT
+	TB_BC_YnCity.CityCode,
+	( CASE WHEN LEFT ( YnName, 2 ) = '西双' THEN '版纳' ELSE LEFT ( YnName, 2 ) END ) AS name 
+FROM
+	dbo.TB_BC_YnCity 
+WHERE
+	FLOOR( TB_BC_YnCity.CityCode/ 100 ) * 100 = TB_BC_YnCity.CityCode 
+	AND LEFT ( TB_BC_YnCity.CityCode, 2 ) = 33
+
+DECLARE @year_no INT = 2023;
+SELECT DISTINCT
+	TB_BC_EntInfo.Ent_SN AS [企业], 
+	TB_BC_EntInfo.Ent_Industry AS [行业], 
+	LEFT ( TB_BC_YnCity.YnId, 4 ) AS [地域], 
+	TB_BC_YnCity.CityCode AS [城市], 
+	TB_BC_JobOffer.JobName AS [招聘职位], 
+	TB_BC_JobOffer.JobSn AS [招聘职位ID], 
+	TB_BC_JobOffer.Job_Publish_Date AS [职位发布日期], 
+	MONTH ( TB_BC_JobOffer.Job_Publish_Date ) AS [职位发布月份], 
+	TB_BC_JobOffer.Job_People_Count AS [招聘人数], 
+	str( TB_BC_JobOffer.JobCategory ) AS [岗位类别]
+FROM
+	dbo.TB_BC_YnCity
+	INNER JOIN
+	dbo.TB_BC_EntInfo
+	ON 
+		TB_BC_YnCity.CityCode = TB_BC_EntInfo.CityCode
+	LEFT JOIN
+	dbo.TB_BC_JobOffer
+	ON 
+		TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+WHERE
+	(
+		YEAR ( TB_BC_JobOffer.Job_Publish_Date ) = @year_no
+	) AND
+	LEFT ( dbo.TB_BC_YnCity.YnId, 2 ) = 53
+
+SELECT DISTINCT
+	'出口' AS [行业类别],
+	TB_BC_EntInfo.Ent_Name AS [企业名称],
+	TB_BC_EntInfo.CityCode AS [地州],
+	TB_BC_JobOffer.JobSn AS [招聘职位ID],
+	TB_BC_JobOffer.JobName AS [招聘职位],
+	TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+	TRIM ( STR( TB_BC_JobOffer.SalaryLow ) + '—' + TRIM ( STR( TB_BC_JobOffer.SalaryHigh ) ) ) AS [薪资区间],
+	(
+	CASE
+			
+			WHEN TB_BC_JobOffer.JobLearnLimited= 0 THEN
+			'学历不限' 
+			WHEN TB_BC_JobOffer.JobLearnLimited= 10 THEN
+			'小学' 
+			WHEN TB_BC_JobOffer.JobLearnLimited= 20 THEN
+			'初中' 
+			WHEN TB_BC_JobOffer.JobLearnLimited= 30 THEN
+			'高中' 
+			WHEN TB_BC_JobOffer.JobLearnLimited= 40 THEN
+			'中专' 
+			WHEN TB_BC_JobOffer.JobLearnLimited= 50 THEN
+			'大专' 
+			WHEN TB_BC_JobOffer.JobLearnLimited= 60 THEN
+			'本科' 
+			WHEN TB_BC_JobOffer.JobLearnLimited= 70 THEN
+			'硕士' 
+			WHEN TB_BC_JobOffer.JobLearnLimited= 80 THEN
+			'博士' 
+			WHEN TB_BC_JobOffer.JobLearnLimited= 90 THEN
+			'博士后' 
+			WHEN TB_BC_JobOffer.JobLearnLimited= 100 THEN
+			'在读硕士' 
+			WHEN TB_BC_JobOffer.JobLearnLimited= 110 THEN
+			'无学历' ELSE NULL 
+		END 
+		) AS 学历要求 
+	FROM
+		dbo.TB_BC_EntInfo
+		INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+		INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode 
+	WHERE
+		( Ent_intro LIKE N'%出口%' OR Ent_intro LIKE N'%外贸%' ) UNION
+	SELECT
+		'现代物流业' AS 行业类别,
+		TB_BC_EntInfo.Ent_Name AS [企业名称],
+		TB_BC_EntInfo.CityCode AS [地州],
+		TB_BC_JobOffer.JobSn AS [招聘职位ID],
+		TB_BC_JobOffer.JobName AS [招聘职位],
+		TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+		TRIM ( STR( TB_BC_JobOffer.SalaryLow ) + '—' + TRIM ( STR( TB_BC_JobOffer.SalaryHigh ) ) ) AS [薪资区间],
+		(
+		CASE
+				
+				WHEN TB_BC_JobOffer.JobLearnLimited= 0 THEN
+				'学历不限' 
+				WHEN TB_BC_JobOffer.JobLearnLimited= 10 THEN
+				'小学' 
+				WHEN TB_BC_JobOffer.JobLearnLimited= 20 THEN
+				'初中' 
+				WHEN TB_BC_JobOffer.JobLearnLimited= 30 THEN
+				'高中' 
+				WHEN TB_BC_JobOffer.JobLearnLimited= 40 THEN
+				'中专' 
+				WHEN TB_BC_JobOffer.JobLearnLimited= 50 THEN
+				'大专' 
+				WHEN TB_BC_JobOffer.JobLearnLimited= 60 THEN
+				'本科' 
+				WHEN TB_BC_JobOffer.JobLearnLimited= 70 THEN
+				'硕士' 
+				WHEN TB_BC_JobOffer.JobLearnLimited= 80 THEN
+				'博士' 
+				WHEN TB_BC_JobOffer.JobLearnLimited= 90 THEN
+				'博士后' 
+				WHEN TB_BC_JobOffer.JobLearnLimited= 100 THEN
+				'在读硕士' 
+				WHEN TB_BC_JobOffer.JobLearnLimited= 110 THEN
+				'无学历' ELSE NULL 
+			END 
+			) AS 学历要求 
+		FROM
+			dbo.TB_BC_EntInfo
+			INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+			INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode 
+		WHERE
+			Ent_intro LIKE N'%物流%' 
+			OR Ent_intro LIKE N'%配送%' 
+			OR Ent_intro LIKE N'%货运%' 
+			OR Ent_intro LIKE N'%仓储%' 
+			OR Ent_intro LIKE N'%分拣%' 
+			OR Ent_intro LIKE N'%分拨%' 
+			OR Ent_intro LIKE N'%冷库%' 
+			OR Ent_intro LIKE N'%冷链%' UNION
+		SELECT
+			'文旅康养' AS 行业类别,
+			TB_BC_EntInfo.Ent_Name AS [企业名称],
+			TB_BC_EntInfo.CityCode AS [地州],
+			TB_BC_JobOffer.JobSn AS [招聘职位ID],
+			TB_BC_JobOffer.JobName AS [招聘职位],
+			TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+			TRIM ( STR( TB_BC_JobOffer.SalaryLow ) + '—' + TRIM ( STR( TB_BC_JobOffer.SalaryHigh ) ) ) AS [薪资区间],
+			(
+			CASE
+					
+					WHEN TB_BC_JobOffer.JobLearnLimited= 0 THEN
+					'学历不限' 
+					WHEN TB_BC_JobOffer.JobLearnLimited= 10 THEN
+					'小学' 
+					WHEN TB_BC_JobOffer.JobLearnLimited= 20 THEN
+					'初中' 
+					WHEN TB_BC_JobOffer.JobLearnLimited= 30 THEN
+					'高中' 
+					WHEN TB_BC_JobOffer.JobLearnLimited= 40 THEN
+					'中专' 
+					WHEN TB_BC_JobOffer.JobLearnLimited= 50 THEN
+					'大专' 
+					WHEN TB_BC_JobOffer.JobLearnLimited= 60 THEN
+					'本科' 
+					WHEN TB_BC_JobOffer.JobLearnLimited= 70 THEN
+					'硕士' 
+					WHEN TB_BC_JobOffer.JobLearnLimited= 80 THEN
+					'博士' 
+					WHEN TB_BC_JobOffer.JobLearnLimited= 90 THEN
+					'博士后' 
+					WHEN TB_BC_JobOffer.JobLearnLimited= 100 THEN
+					'在读硕士' 
+					WHEN TB_BC_JobOffer.JobLearnLimited= 110 THEN
+					'无学历' ELSE NULL 
+				END 
+				) AS 学历要求 
+			FROM
+				dbo.TB_BC_EntInfo
+				INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+				INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode 
+			WHERE
+				Ent_intro LIKE N'%旅游%' 
+				OR Ent_intro LIKE N'%亲子%' 
+				OR Ent_intro LIKE N'%自驾%' 
+				OR Ent_intro LIKE N'%景区%' 
+				OR Ent_intro LIKE N'%民宿%' 
+				OR Ent_intro LIKE N'%度假%' 
+				OR Ent_intro LIKE N'%休闲%' 
+				OR Ent_intro LIKE N'%文旅康养%' 
+				OR Ent_intro LIKE N'%养老基地%' 
+				OR Ent_intro LIKE N'%康养基地%' UNION
+			SELECT
+				'数字经济' AS 行业类别,
+				TB_BC_EntInfo.Ent_Name AS [企业名称],
+				TB_BC_EntInfo.CityCode AS [地州],
+				TB_BC_JobOffer.JobSn AS [招聘职位ID],
+				TB_BC_JobOffer.JobName AS [招聘职位],
+				TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+				TRIM ( STR( TB_BC_JobOffer.SalaryLow ) + '—' + TRIM ( STR( TB_BC_JobOffer.SalaryHigh ) ) ) AS [薪资区间],
+				(
+				CASE
+						
+						WHEN TB_BC_JobOffer.JobLearnLimited= 0 THEN
+						'学历不限' 
+						WHEN TB_BC_JobOffer.JobLearnLimited= 10 THEN
+						'小学' 
+						WHEN TB_BC_JobOffer.JobLearnLimited= 20 THEN
+						'初中' 
+						WHEN TB_BC_JobOffer.JobLearnLimited= 30 THEN
+						'高中' 
+						WHEN TB_BC_JobOffer.JobLearnLimited= 40 THEN
+						'中专' 
+						WHEN TB_BC_JobOffer.JobLearnLimited= 50 THEN
+						'大专' 
+						WHEN TB_BC_JobOffer.JobLearnLimited= 60 THEN
+						'本科' 
+						WHEN TB_BC_JobOffer.JobLearnLimited= 70 THEN
+						'硕士' 
+						WHEN TB_BC_JobOffer.JobLearnLimited= 80 THEN
+						'博士' 
+						WHEN TB_BC_JobOffer.JobLearnLimited= 90 THEN
+						'博士后' 
+						WHEN TB_BC_JobOffer.JobLearnLimited= 100 THEN
+						'在读硕士' 
+						WHEN TB_BC_JobOffer.JobLearnLimited= 110 THEN
+						'无学历' ELSE NULL 
+					END 
+					) AS 学历要求 
+				FROM
+					dbo.TB_BC_EntInfo
+					INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+					INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode 
+				WHERE
+					Ent_intro LIKE N'%数字经济%' 
+					OR Ent_intro LIKE N'%智能终端%' 
+					OR Ent_intro LIKE N'%半导体%' 
+					OR Ent_intro LIKE N'%信创%' 
+					OR Ent_intro LIKE N'%电子材料%' 
+					OR Ent_intro LIKE N'%手机%' 
+					OR Ent_intro LIKE N'%电脑%' 
+					OR Ent_intro LIKE N'%平板电脑%' 
+					OR Ent_intro LIKE N'%PC机%' 
+					OR Ent_intro LIKE N'%电脑%' 
+					OR Ent_intro LIKE N'%网络设备%' 
+					OR Ent_intro LIKE N'%数码%' 
+					OR Ent_intro LIKE N'%网络销售%' 
+					OR Ent_intro LIKE N'%软件%' 
+					OR Ent_intro LIKE N'%信息技术%' 
+					OR Ent_intro LIKE N'%5G%' 
+					OR Ent_intro LIKE N'%物联网%' 
+					OR Ent_intro LIKE N'%大数据%' 
+					OR Ent_intro LIKE N'%数字农业%' 
+					OR Ent_intro LIKE N'%智能制造%' 
+					OR Ent_intro LIKE N'%智慧旅游%' 
+					OR Ent_intro LIKE N'%数字文创%' 
+					OR Ent_intro LIKE N'%数字商贸%' 
+					OR Ent_intro LIKE N'%智慧物流%' 
+					OR Ent_intro LIKE N'%智慧园区%' 
+					OR Ent_intro LIKE N'%智慧景区%' 
+					OR Ent_intro LIKE N'%直播电商%' 
+					OR Ent_intro LIKE N'%虚拟产业园%' 
+					OR Ent_intro LIKE N'%数字经济园区%' UNION
+				SELECT
+					'生物医药' AS 行业类别,
+					TB_BC_EntInfo.Ent_Name AS [企业名称],
+					TB_BC_EntInfo.CityCode AS [地州],
+					TB_BC_JobOffer.JobSn AS [招聘职位ID],
+					TB_BC_JobOffer.JobName AS [招聘职位],
+					TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+					TRIM ( STR( TB_BC_JobOffer.SalaryLow ) + '—' + TRIM ( STR( TB_BC_JobOffer.SalaryHigh ) ) ) AS [薪资区间],
+					(
+					CASE
+							
+							WHEN TB_BC_JobOffer.JobLearnLimited= 0 THEN
+							'学历不限' 
+							WHEN TB_BC_JobOffer.JobLearnLimited= 10 THEN
+							'小学' 
+							WHEN TB_BC_JobOffer.JobLearnLimited= 20 THEN
+							'初中' 
+							WHEN TB_BC_JobOffer.JobLearnLimited= 30 THEN
+							'高中' 
+							WHEN TB_BC_JobOffer.JobLearnLimited= 40 THEN
+							'中专' 
+							WHEN TB_BC_JobOffer.JobLearnLimited= 50 THEN
+							'大专' 
+							WHEN TB_BC_JobOffer.JobLearnLimited= 60 THEN
+							'本科' 
+							WHEN TB_BC_JobOffer.JobLearnLimited= 70 THEN
+							'硕士' 
+							WHEN TB_BC_JobOffer.JobLearnLimited= 80 THEN
+							'博士' 
+							WHEN TB_BC_JobOffer.JobLearnLimited= 90 THEN
+							'博士后' 
+							WHEN TB_BC_JobOffer.JobLearnLimited= 100 THEN
+							'在读硕士' 
+							WHEN TB_BC_JobOffer.JobLearnLimited= 110 THEN
+							'无学历' ELSE NULL 
+						END 
+						) AS 学历要求 
+					FROM
+						dbo.TB_BC_EntInfo
+						INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+						INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode 
+					WHERE
+						Ent_intro LIKE N'%生物%' 
+						OR Ent_intro LIKE N'%医药%' 
+						OR Ent_intro LIKE N'%三七%' 
+						OR Ent_intro LIKE N'%石斛%' 
+						OR Ent_intro LIKE N'%天麻%' 
+						OR Ent_intro LIKE N'%中药材%' 
+						OR Ent_intro LIKE N'%GAP%' 
+						OR Ent_intro LIKE N'%疫苗%' 
+						OR Ent_intro LIKE N'%制药%' 
+						OR Ent_intro LIKE N'%中药材%' 
+						OR Ent_intro LIKE N'%仿制药%' UNION
+					SELECT
+						'新材料产业' AS 行业类别,
+						TB_BC_EntInfo.Ent_Name AS [企业名称],
+						TB_BC_EntInfo.CityCode AS [地州],
+						TB_BC_JobOffer.JobSn AS [招聘职位ID],
+						TB_BC_JobOffer.JobName AS [招聘职位],
+						TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+						TRIM ( STR( TB_BC_JobOffer.SalaryLow ) + '—' + TRIM ( STR( TB_BC_JobOffer.SalaryHigh ) ) ) AS [薪资区间],
+						(
+						CASE
+								
+								WHEN TB_BC_JobOffer.JobLearnLimited= 0 THEN
+								'学历不限' 
+								WHEN TB_BC_JobOffer.JobLearnLimited= 10 THEN
+								'小学' 
+								WHEN TB_BC_JobOffer.JobLearnLimited= 20 THEN
+								'初中' 
+								WHEN TB_BC_JobOffer.JobLearnLimited= 30 THEN
+								'高中' 
+								WHEN TB_BC_JobOffer.JobLearnLimited= 40 THEN
+								'中专' 
+								WHEN TB_BC_JobOffer.JobLearnLimited= 50 THEN
+								'大专' 
+								WHEN TB_BC_JobOffer.JobLearnLimited= 60 THEN
+								'本科' 
+								WHEN TB_BC_JobOffer.JobLearnLimited= 70 THEN
+								'硕士' 
+								WHEN TB_BC_JobOffer.JobLearnLimited= 80 THEN
+								'博士' 
+								WHEN TB_BC_JobOffer.JobLearnLimited= 90 THEN
+								'博士后' 
+								WHEN TB_BC_JobOffer.JobLearnLimited= 100 THEN
+								'在读硕士' 
+								WHEN TB_BC_JobOffer.JobLearnLimited= 110 THEN
+								'无学历' ELSE NULL 
+							END 
+							) AS 学历要求 
+						FROM
+							dbo.TB_BC_EntInfo
+							INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+							INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode 
+						WHERE
+							Ent_intro LIKE N'%锂%' 
+							OR Ent_intro LIKE N'%电池%' 
+							OR Ent_intro LIKE N'%贵金属%' 
+							OR Ent_intro LIKE N'%磷酸铁锂%' 
+							OR Ent_intro LIKE N'%铝塑膜%' 
+							OR Ent_intro LIKE N'%锡%' 
+							OR Ent_intro LIKE N'%钛%' 
+							OR Ent_intro LIKE N'%光电子%' 
+							OR Ent_intro LIKE N'%镓%' 
+							OR Ent_intro LIKE N'%液态金属%' 
+							OR Ent_intro LIKE N'%半导体%' 
+							OR Ent_intro LIKE N'%新材料%' UNION
+						SELECT
+							'烟草产业' AS 行业类别,
+							TB_BC_EntInfo.Ent_Name AS [企业名称],
+							TB_BC_EntInfo.CityCode AS [地州],
+							TB_BC_JobOffer.JobSn AS [招聘职位ID],
+							TB_BC_JobOffer.JobName AS [招聘职位],
+							TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+							TRIM ( STR( TB_BC_JobOffer.SalaryLow ) + '—' + TRIM ( STR( TB_BC_JobOffer.SalaryHigh ) ) ) AS [薪资区间],
+							(
+							CASE
+									
+									WHEN TB_BC_JobOffer.JobLearnLimited= 0 THEN
+									'学历不限' 
+									WHEN TB_BC_JobOffer.JobLearnLimited= 10 THEN
+									'小学' 
+									WHEN TB_BC_JobOffer.JobLearnLimited= 20 THEN
+									'初中' 
+									WHEN TB_BC_JobOffer.JobLearnLimited= 30 THEN
+									'高中' 
+									WHEN TB_BC_JobOffer.JobLearnLimited= 40 THEN
+									'中专' 
+									WHEN TB_BC_JobOffer.JobLearnLimited= 50 THEN
+									'大专' 
+									WHEN TB_BC_JobOffer.JobLearnLimited= 60 THEN
+									'本科' 
+									WHEN TB_BC_JobOffer.JobLearnLimited= 70 THEN
+									'硕士' 
+									WHEN TB_BC_JobOffer.JobLearnLimited= 80 THEN
+									'博士' 
+									WHEN TB_BC_JobOffer.JobLearnLimited= 90 THEN
+									'博士后' 
+									WHEN TB_BC_JobOffer.JobLearnLimited= 100 THEN
+									'在读硕士' 
+									WHEN TB_BC_JobOffer.JobLearnLimited= 110 THEN
+									'无学历' ELSE NULL 
+								END 
+								) AS 学历要求 
+							FROM
+								dbo.TB_BC_EntInfo
+								INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+								INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode 
+							WHERE
+								Ent_intro LIKE N'%烟叶%' 
+								OR Ent_intro LIKE N'%烟机%' 
+								OR Ent_intro LIKE N'%卷烟%' 
+								OR Ent_intro LIKE N'%烟草%' 
+								OR Ent_intro LIKE N'%烤烟%' 
+								OR Ent_intro LIKE N'%烟草科学%' 
+								OR Ent_intro LIKE N'%降焦减害%' UNION
+							SELECT
+								'绿色能源产业' AS 行业类别,
+								TB_BC_EntInfo.Ent_Name AS [企业名称],
+								TB_BC_EntInfo.CityCode AS [地州],
+								TB_BC_JobOffer.JobSn AS [招聘职位ID],
+								TB_BC_JobOffer.JobName AS [招聘职位],
+								TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+								TRIM ( STR( TB_BC_JobOffer.SalaryLow ) + '—' + TRIM ( STR( TB_BC_JobOffer.SalaryHigh ) ) ) AS [薪资区间],
+								(
+								CASE
+										
+										WHEN TB_BC_JobOffer.JobLearnLimited= 0 THEN
+										'学历不限' 
+										WHEN TB_BC_JobOffer.JobLearnLimited= 10 THEN
+										'小学' 
+										WHEN TB_BC_JobOffer.JobLearnLimited= 20 THEN
+										'初中' 
+										WHEN TB_BC_JobOffer.JobLearnLimited= 30 THEN
+										'高中' 
+										WHEN TB_BC_JobOffer.JobLearnLimited= 40 THEN
+										'中专' 
+										WHEN TB_BC_JobOffer.JobLearnLimited= 50 THEN
+										'大专' 
+										WHEN TB_BC_JobOffer.JobLearnLimited= 60 THEN
+										'本科' 
+										WHEN TB_BC_JobOffer.JobLearnLimited= 70 THEN
+										'硕士' 
+										WHEN TB_BC_JobOffer.JobLearnLimited= 80 THEN
+										'博士' 
+										WHEN TB_BC_JobOffer.JobLearnLimited= 90 THEN
+										'博士后' 
+										WHEN TB_BC_JobOffer.JobLearnLimited= 100 THEN
+										'在读硕士' 
+										WHEN TB_BC_JobOffer.JobLearnLimited= 110 THEN
+										'无学历' ELSE NULL 
+									END 
+									) AS 学历要求 
+								FROM
+									dbo.TB_BC_EntInfo
+									INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+									INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode 
+								WHERE
+									Ent_intro LIKE N'%绿色能源%' 
+									OR Ent_intro LIKE N'%能源%' 
+									OR Ent_intro LIKE N'%清洁能源%' 
+									OR Ent_intro LIKE N'%水电%' 
+									OR Ent_intro LIKE N'%可再生能源%' 
+									OR Ent_intro LIKE N'%电网%' 
+									OR Ent_intro LIKE N'%煤电%' 
+									OR Ent_intro LIKE N'%页岩气%' 
+									OR Ent_intro LIKE N'%储能%' 
+									OR Ent_intro LIKE N'%蓄能%' UNION
+								SELECT
+									'高端制造产业' AS 行业类别,
+									TB_BC_EntInfo.Ent_Name AS [企业名称],
+									TB_BC_EntInfo.CityCode AS [地州],
+									TB_BC_JobOffer.JobSn AS [招聘职位ID],
+									TB_BC_JobOffer.JobName AS [招聘职位],
+									TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+									TRIM ( STR( TB_BC_JobOffer.SalaryLow ) + '—' + TRIM ( STR( TB_BC_JobOffer.SalaryHigh ) ) ) AS [薪资区间],
+									(
+									CASE
+											
+											WHEN TB_BC_JobOffer.JobLearnLimited= 0 THEN
+											'学历不限' 
+											WHEN TB_BC_JobOffer.JobLearnLimited= 10 THEN
+											'小学' 
+											WHEN TB_BC_JobOffer.JobLearnLimited= 20 THEN
+											'初中' 
+											WHEN TB_BC_JobOffer.JobLearnLimited= 30 THEN
+											'高中' 
+											WHEN TB_BC_JobOffer.JobLearnLimited= 40 THEN
+											'中专' 
+											WHEN TB_BC_JobOffer.JobLearnLimited= 50 THEN
+											'大专' 
+											WHEN TB_BC_JobOffer.JobLearnLimited= 60 THEN
+											'本科' 
+											WHEN TB_BC_JobOffer.JobLearnLimited= 70 THEN
+											'硕士' 
+											WHEN TB_BC_JobOffer.JobLearnLimited= 80 THEN
+											'博士' 
+											WHEN TB_BC_JobOffer.JobLearnLimited= 90 THEN
+											'博士后' 
+											WHEN TB_BC_JobOffer.JobLearnLimited= 100 THEN
+											'在读硕士' 
+											WHEN TB_BC_JobOffer.JobLearnLimited= 110 THEN
+											'无学历' ELSE NULL 
+										END 
+										) AS 学历要求 
+									FROM
+										dbo.TB_BC_EntInfo
+										INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+										INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode 
+									WHERE
+										Ent_intro LIKE N'%制造%' 
+										OR Ent_intro LIKE N'%磷%' 
+										OR Ent_intro LIKE N'%硅%' 
+										OR Ent_intro LIKE N'%变压器%' 
+										OR Ent_intro LIKE N'%电机%' 
+										OR Ent_intro LIKE N'%风电%' 
+										OR Ent_intro LIKE N'%电力%' 
+										OR Ent_intro LIKE N'%机床%' 
+										OR Ent_intro LIKE N'%车床%' 
+										OR Ent_intro LIKE N'%光机%' 
+										OR Ent_intro LIKE N'%数控%' 
+										OR Ent_intro LIKE N'%物流%' 
+										OR Ent_intro LIKE N'%自动化物流装备%' 
+										OR Ent_intro LIKE N'%铁路养护装备%' 
+										OR Ent_intro LIKE N'%农机装备%' 
+										OR Ent_intro LIKE N'%内燃机%' 
+										OR Ent_intro LIKE N'%电子设备%' 
+										OR Ent_intro LIKE N'%节能环保%' UNION
+									SELECT
+										'绿色铝产业' AS 行业类别,
+										TB_BC_EntInfo.Ent_Name AS [企业名称],
+										TB_BC_EntInfo.CityCode AS [地州],
+										TB_BC_JobOffer.JobSn AS [招聘职位ID],
+										TB_BC_JobOffer.JobName AS [招聘职位],
+										TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+										TRIM ( STR( TB_BC_JobOffer.SalaryLow ) + '—' + TRIM ( STR( TB_BC_JobOffer.SalaryHigh ) ) ) AS [薪资区间],
+										(
+										CASE
+												
+												WHEN TB_BC_JobOffer.JobLearnLimited= 0 THEN
+												'学历不限' 
+												WHEN TB_BC_JobOffer.JobLearnLimited= 10 THEN
+												'小学' 
+												WHEN TB_BC_JobOffer.JobLearnLimited= 20 THEN
+												'初中' 
+												WHEN TB_BC_JobOffer.JobLearnLimited= 30 THEN
+												'高中' 
+												WHEN TB_BC_JobOffer.JobLearnLimited= 40 THEN
+												'中专' 
+												WHEN TB_BC_JobOffer.JobLearnLimited= 50 THEN
+												'大专' 
+												WHEN TB_BC_JobOffer.JobLearnLimited= 60 THEN
+												'本科' 
+												WHEN TB_BC_JobOffer.JobLearnLimited= 70 THEN
+												'硕士' 
+												WHEN TB_BC_JobOffer.JobLearnLimited= 80 THEN
+												'博士' 
+												WHEN TB_BC_JobOffer.JobLearnLimited= 90 THEN
+												'博士后' 
+												WHEN TB_BC_JobOffer.JobLearnLimited= 100 THEN
+												'在读硕士' 
+												WHEN TB_BC_JobOffer.JobLearnLimited= 110 THEN
+												'无学历' ELSE NULL 
+											END 
+											) AS 学历要求 
+										FROM
+											dbo.TB_BC_EntInfo
+											INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+											INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode 
+										WHERE
+											Ent_intro LIKE N'%铝%' UNION
+										SELECT
+											'光伏之都产业' AS 行业类别,
+											TB_BC_EntInfo.Ent_Name AS [企业名称],
+											TB_BC_EntInfo.CityCode AS [地州],
+											TB_BC_JobOffer.JobSn AS [招聘职位ID],
+											TB_BC_JobOffer.JobName AS [招聘职位],
+											TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+											TRIM ( STR( TB_BC_JobOffer.SalaryLow ) + '—' + TRIM ( STR( TB_BC_JobOffer.SalaryHigh ) ) ) AS [薪资区间],
+											(
+											CASE
+													
+													WHEN TB_BC_JobOffer.JobLearnLimited= 0 THEN
+													'学历不限' 
+													WHEN TB_BC_JobOffer.JobLearnLimited= 10 THEN
+													'小学' 
+													WHEN TB_BC_JobOffer.JobLearnLimited= 20 THEN
+													'初中' 
+													WHEN TB_BC_JobOffer.JobLearnLimited= 30 THEN
+													'高中' 
+													WHEN TB_BC_JobOffer.JobLearnLimited= 40 THEN
+													'中专' 
+													WHEN TB_BC_JobOffer.JobLearnLimited= 50 THEN
+													'大专' 
+													WHEN TB_BC_JobOffer.JobLearnLimited= 60 THEN
+													'本科' 
+													WHEN TB_BC_JobOffer.JobLearnLimited= 70 THEN
+													'硕士' 
+													WHEN TB_BC_JobOffer.JobLearnLimited= 80 THEN
+													'博士' 
+													WHEN TB_BC_JobOffer.JobLearnLimited= 90 THEN
+													'博士后' 
+													WHEN TB_BC_JobOffer.JobLearnLimited= 100 THEN
+													'在读硕士' 
+													WHEN TB_BC_JobOffer.JobLearnLimited= 110 THEN
+													'无学历' ELSE NULL 
+												END 
+												) AS 学历要求 
+											FROM
+												dbo.TB_BC_EntInfo
+												INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+												INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode 
+											WHERE
+												Ent_intro LIKE N'%光伏%' UNION
+											SELECT
+												'高原特色现代农业产业' AS 行业类别,
+												TB_BC_EntInfo.Ent_Name AS [企业名称],
+												TB_BC_EntInfo.CityCode AS [地州],
+												TB_BC_JobOffer.JobSn AS [招聘职位ID],
+												TB_BC_JobOffer.JobName AS [招聘职位],
+												TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+												TRIM ( STR( TB_BC_JobOffer.SalaryLow ) + '—' + TRIM ( STR( TB_BC_JobOffer.SalaryHigh ) ) ) AS [薪资区间],
+												(
+												CASE
+														
+														WHEN TB_BC_JobOffer.JobLearnLimited= 0 THEN
+														'学历不限' 
+														WHEN TB_BC_JobOffer.JobLearnLimited= 10 THEN
+														'小学' 
+														WHEN TB_BC_JobOffer.JobLearnLimited= 20 THEN
+														'初中' 
+														WHEN TB_BC_JobOffer.JobLearnLimited= 30 THEN
+														'高中' 
+														WHEN TB_BC_JobOffer.JobLearnLimited= 40 THEN
+														'中专' 
+														WHEN TB_BC_JobOffer.JobLearnLimited= 50 THEN
+														'大专' 
+														WHEN TB_BC_JobOffer.JobLearnLimited= 60 THEN
+														'本科' 
+														WHEN TB_BC_JobOffer.JobLearnLimited= 70 THEN
+														'硕士' 
+														WHEN TB_BC_JobOffer.JobLearnLimited= 80 THEN
+														'博士' 
+														WHEN TB_BC_JobOffer.JobLearnLimited= 90 THEN
+														'博士后' 
+														WHEN TB_BC_JobOffer.JobLearnLimited= 100 THEN
+														'在读硕士' 
+														WHEN TB_BC_JobOffer.JobLearnLimited= 110 THEN
+														'无学历' ELSE NULL 
+													END 
+													) AS 学历要求 
+												FROM
+													dbo.TB_BC_EntInfo
+													INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+													INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode 
+												WHERE
+													Ent_intro LIKE N'%绿色农业%' 
+													OR Ent_intro LIKE N'%化肥%' 
+													OR Ent_intro LIKE N'%猪%' 
+													OR Ent_intro LIKE N'%农药%' 
+													OR Ent_intro LIKE N'%花卉%' 
+													OR Ent_intro LIKE N'%茶叶%' 
+													OR Ent_intro LIKE N'%水果%' 
+													OR Ent_intro LIKE N'%坚果%' 
+													OR Ent_intro LIKE N'%咖啡%' 
+													OR Ent_intro LIKE N'%中药材%' 
+													OR Ent_intro LIKE N'%牛羊%' 
+													OR Ent_intro LIKE N'%乡村旅游%' 
+													OR Ent_intro LIKE N'%烟草%' 
+													OR Ent_intro LIKE N'%甘蔗%' 
+													OR Ent_intro LIKE N'%天然橡胶%' 
+												OR Ent_intro LIKE N'%绿色食品%' 
+	OR Ent_intro LIKE N'%食用菌%'
+
+--VIP用户包含有效用户（2）和过期VIP（3），因此：
+----全部VIP：where条件语句使用【 TB_Company.VipType= 2 OR TB_Company.VipType= 3】
+----有效VIP：where条件语句使用【 TB_Company.VipType= 2 】
+----过期VIP：where条件语句使用【 TB_Company.VipType= 3 】
+--当然也可以 通过在视图【ViewCompanyMark】来查询，只需要把【TB_Company】替换成【ViewCompanyMark】即可，其余不用变。
+SELECT
+	(
+		CASE
+			WHEN LEFT (TB_Company.region, 4) = 5301 THEN '昆明'
+			WHEN LEFT (TB_Company.region, 4) = 5303 THEN '曲靖'
+			WHEN LEFT (TB_Company.region, 4) = 5304 THEN '玉溪'
+			WHEN LEFT (TB_Company.region, 4) = 5305 THEN '保山'
+			WHEN LEFT (TB_Company.region, 4) = 5306 THEN '昭通'
+			WHEN LEFT (TB_Company.region, 4) = 5307 THEN '丽江'
+			WHEN LEFT (TB_Company.region, 4) = 5308 THEN '普洱'
+			WHEN LEFT (TB_Company.region, 4) = 5309 THEN '临沧'
+			WHEN LEFT (TB_Company.region, 4) = 5323 THEN '楚雄'
+			WHEN LEFT (TB_Company.region, 4) = 5325 THEN '红河'
+			WHEN LEFT (TB_Company.region, 4) = 5326 THEN '文山'
+			WHEN LEFT (TB_Company.region, 4) = 5328 THEN '版纳'
+			WHEN LEFT (TB_Company.region, 4) = 5329 THEN '大理'
+			WHEN LEFT (TB_Company.region, 4) = 5331 THEN '德宏'
+			WHEN LEFT (TB_Company.region, 4) = 5333 THEN '怒江'
+			WHEN LEFT (TB_Company.region, 4) = 5334 THEN '迪庆'
+			ELSE '其他'
+		END
+	) AS 地州,
+	COUNT (DISTINCT (TB_Company.UserID)) AS 数量
+FROM
+	TB_Company
+WHERE
+	(
+		TB_Company.VipType = 2
+		OR TB_Company.VipType = 3
+	)
+	and LEFT (TB_Company.region, 2) = 53
+GROUP BY
+	rollup (
+		CASE
+			WHEN LEFT (TB_Company.region, 4) = 5301 THEN '昆明'
+			WHEN LEFT (TB_Company.region, 4) = 5303 THEN '曲靖'
+			WHEN LEFT (TB_Company.region, 4) = 5304 THEN '玉溪'
+			WHEN LEFT (TB_Company.region, 4) = 5305 THEN '保山'
+			WHEN LEFT (TB_Company.region, 4) = 5306 THEN '昭通'
+			WHEN LEFT (TB_Company.region, 4) = 5307 THEN '丽江'
+			WHEN LEFT (TB_Company.region, 4) = 5308 THEN '普洱'
+			WHEN LEFT (TB_Company.region, 4) = 5309 THEN '临沧'
+			WHEN LEFT (TB_Company.region, 4) = 5323 THEN '楚雄'
+			WHEN LEFT (TB_Company.region, 4) = 5325 THEN '红河'
+			WHEN LEFT (TB_Company.region, 4) = 5326 THEN '文山'
+			WHEN LEFT (TB_Company.region, 4) = 5328 THEN '版纳'
+			WHEN LEFT (TB_Company.region, 4) = 5329 THEN '大理'
+			WHEN LEFT (TB_Company.region, 4) = 5331 THEN '德宏'
+			WHEN LEFT (TB_Company.region, 4) = 5333 THEN '怒江'
+			WHEN LEFT (TB_Company.region, 4) = 5334 THEN '迪庆'
+			ELSE '其他'
+		END
+	)
+ORDER BY
+	数量 DESC
+
+--VIP用户包含有效用户（2）和过期VIP（3），因此：
+--全部VIP：where条件语句使用【 ViewCompanyMark.VipType= 2 OR ViewCompanyMark.VipType= 3】
+--有效VIP：where条件语句使用【 ViewCompanyMark.VipType= 2 】
+--过期VIP：where条件语句使用【 ViewCompanyMark.VipType= 3 】
+SELECT
+	(
+		CASE
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5301 THEN '昆明'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5303 THEN '曲靖'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5304 THEN '玉溪'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5305 THEN '保山'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5306 THEN '昭通'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5307 THEN '丽江'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5308 THEN '普洱'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5309 THEN '临沧'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5323 THEN '楚雄'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5325 THEN '红河'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5326 THEN '文山'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5328 THEN '版纳'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5329 THEN '大理'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5331 THEN '德宏'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5333 THEN '怒江'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5334 THEN '迪庆'
+			ELSE '其他'
+		END
+	) AS 地州,
+	COUNT (DISTINCT (ViewCompanyMark.UserID)) AS 数量
+FROM
+	ViewCompanyMark
+WHERE
+	(
+		ViewCompanyMark.VipType = 2
+		OR ViewCompanyMark.VipType = 3
+	)
+	and LEFT (ViewCompanyMark.region, 2) = 53
+GROUP BY
+	rollup (
+		CASE
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5301 THEN '昆明'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5303 THEN '曲靖'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5304 THEN '玉溪'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5305 THEN '保山'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5306 THEN '昭通'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5307 THEN '丽江'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5308 THEN '普洱'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5309 THEN '临沧'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5323 THEN '楚雄'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5325 THEN '红河'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5326 THEN '文山'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5328 THEN '版纳'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5329 THEN '大理'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5331 THEN '德宏'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5333 THEN '怒江'
+			WHEN LEFT (ViewCompanyMark.region, 4) = 5334 THEN '迪庆'
+			ELSE '其他'
+		END
+	)
+ORDER BY
+	数量 DESC
+
+SELECT
+	o.地域,
+	o.职位发布月份,
+	SUM (o.企业数量) AS 企业数量
+FROM
+	(
+		SELECT
+			COUNT (DISTINCT (TB_BC_EntInfo.Ent_SN)) AS [企业数量],
+			--SUM ( TB_BC_JobOffer.Job_People_Count ) AS [招聘人数],
+			--COUNT ( DISTINCT ( TB_BC_JobOffer.JobSn ) ) AS [招聘职位数量],
+			--TB_BC_EntInfo.Ent_Industry AS [行业],
+			(
+				CASE
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3310 THEN '昆明'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3311 THEN '曲靖'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3312 THEN '玉溪'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3313 THEN '保山'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3314 THEN '昭通'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3315 THEN '丽江'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3316 THEN '普洱'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3317 THEN '临沧'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3322 THEN '楚雄'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3323 THEN '红河'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3324 THEN '文山'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3325 THEN '版纳'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3321 THEN '大理'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3318 THEN '德宏'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3319 THEN '怒江'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3320 THEN '迪庆'
+					ELSE '其他'
+				END
+			) AS [地域],
+			MONTH (TB_BC_JobOffer.Job_Publish_Date) AS [职位发布月份] --str( TB_BC_JobOffer.JobCategory ) AS [岗位类别]
+		FROM
+			TB_BC_JobOffer
+			LEFT JOIN dbo.TB_BC_EntInfo ON TB_BC_JobOffer.EntSn = TB_BC_EntInfo.Ent_SN
+		WHERE
+			(
+				YEAR (TB_BC_JobOffer.Job_Publish_Date) = 2023
+				AND (
+					MONTH (TB_BC_JobOffer.Job_Publish_Date) <> 12
+				)
+			)
+			AND LEFT (dbo.TB_BC_EntInfo.CityCode, 2) = 33
+		GROUP BY
+			MONTH (TB_BC_JobOffer.Job_Publish_Date),
+			(
+				CASE
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3310 THEN '昆明'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3311 THEN '曲靖'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3312 THEN '玉溪'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3313 THEN '保山'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3314 THEN '昭通'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3315 THEN '丽江'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3316 THEN '普洱'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3317 THEN '临沧'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3322 THEN '楚雄'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3323 THEN '红河'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3324 THEN '文山'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3325 THEN '版纳'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3321 THEN '大理'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3318 THEN '德宏'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3319 THEN '怒江'
+					WHEN LEFT (TB_BC_EntInfo.CityCode, 4) = 3320 THEN '迪庆'
+					ELSE '其他'
+				END
+			),
+			TB_BC_EntInfo.Ent_Industry
+	) o
+GROUP BY
+	职位发布月份,
+	地域
+
+SELECT
+    CASE
+        CompanyType
+        WHEN 10 THEN '国有企业'
+        WHEN 20 THEN '私营/民营企业'
+        WHEN 30 THEN '外商独资企业'
+        WHEN 40 THEN '三资企业'
+        WHEN 50 THEN '股份制企业'
+        WHEN 60 THEN '集体企业'
+        WHEN 70 THEN '事业单位'
+        WHEN 80 THEN '社会团体'
+        WHEN 90 THEN '行政机关'
+        WHEN 100 THEN '其他'
+        WHEN 110 THEN '高等院校'
+        WHEN 120 THEN '集体事业'
+        WHEN 130 THEN '乡镇企业'
+        WHEN 140 THEN '跨国集团'
+        WHEN 150 THEN '外资企业'
+        WHEN 160 THEN '个体工商户'
+        WHEN 170 THEN '独资企业'
+        WHEN 180 THEN '民营企业'
+        WHEN 190 THEN '私营企业'
+        ELSE '其他'
+    END as type,
+    count(1) as num
+FROM
+    [dbo].[TB_Company]
+WHERE
+    1 = 1
+    and VipType != 2
+GROUP BY
+    CompanyType
+ORDER BY
+    type
+
+-- 区域编码
+-- 5301	昆明市
+-- 5303	曲靖市
+-- 5304	玉溪市
+-- 5305	保山市
+-- 5306	昭通市
+-- 5307	丽江市
+-- 5308	普洱市
+-- 5309	临沧市
+-- 5323	楚雄彝族自治州
+-- 5325	红河哈尼族彝族自治州
+-- 5326	文山壮族苗族自治州
+-- 5328	西双版纳傣族自治州
+-- 5329	大理白族自治州
+-- 5331	德宏傣族景颇族自治州
+-- 5333	怒江傈僳族自治州
+-- 5334	迪庆藏族自治州
+DECLARE @place varchar(20) = '5305%'
+SELECT
+	DISTINCT UserId AS id,
+	CompanyName AS 企业名称,
+	Email AS email
+FROM
+	[dbo].[ViewCompanyMark]
+WHERE
+	1 = 1
+	AND Region LIKE @place --AND DATEADD( day, -360, GETDATE( ) ) < RegTime 
+	AND Email IS NOT NULL
+	AND Email != ''
+
+SELECT
+	DISTINCT '出口' AS [行业类别],
+	TB_BC_EntInfo.Ent_Name AS [企业名称],
+	TB_BC_EntInfo.CityCode AS [地州],
+	TB_BC_JobOffer.JobSn AS [招聘职位ID],
+	TB_BC_JobOffer.JobName AS [招聘职位],
+	TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+	TRIM (
+		STR(TB_BC_JobOffer.SalaryLow) + '—' + TRIM (STR(TB_BC_JobOffer.SalaryHigh))
+	) AS [薪资区间],
+	(
+		CASE
+			WHEN TB_BC_JobOffer.JobLearnLimited = 0 THEN '学历不限'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 10 THEN '小学'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 20 THEN '初中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 30 THEN '高中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 40 THEN '中专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 50 THEN '大专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 60 THEN '本科'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 70 THEN '硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 80 THEN '博士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 90 THEN '博士后'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 100 THEN '在读硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 110 THEN '无学历'
+			ELSE NULL
+		END
+	) AS 学历要求
+FROM
+	dbo.TB_BC_EntInfo
+	INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+	INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode
+WHERE
+	(
+		Ent_intro LIKE N'%出口%'
+		OR Ent_intro LIKE N'%外贸%'
+	)
+UNION
+SELECT
+	'现代物流业' AS 行业类别,
+	TB_BC_EntInfo.Ent_Name AS [企业名称],
+	TB_BC_EntInfo.CityCode AS [地州],
+	TB_BC_JobOffer.JobSn AS [招聘职位ID],
+	TB_BC_JobOffer.JobName AS [招聘职位],
+	TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+	TRIM (
+		STR(TB_BC_JobOffer.SalaryLow) + '—' + TRIM (STR(TB_BC_JobOffer.SalaryHigh))
+	) AS [薪资区间],
+	(
+		CASE
+			WHEN TB_BC_JobOffer.JobLearnLimited = 0 THEN '学历不限'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 10 THEN '小学'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 20 THEN '初中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 30 THEN '高中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 40 THEN '中专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 50 THEN '大专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 60 THEN '本科'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 70 THEN '硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 80 THEN '博士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 90 THEN '博士后'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 100 THEN '在读硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 110 THEN '无学历'
+			ELSE NULL
+		END
+	) AS 学历要求
+FROM
+	dbo.TB_BC_EntInfo
+	INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+	INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode
+WHERE
+	Ent_intro LIKE N'%物流%'
+	OR Ent_intro LIKE N'%配送%'
+	OR Ent_intro LIKE N'%货运%'
+	OR Ent_intro LIKE N'%仓储%'
+	OR Ent_intro LIKE N'%分拣%'
+	OR Ent_intro LIKE N'%分拨%'
+	OR Ent_intro LIKE N'%冷库%'
+	OR Ent_intro LIKE N'%冷链%'
+UNION
+SELECT
+	'文旅康养' AS 行业类别,
+	TB_BC_EntInfo.Ent_Name AS [企业名称],
+	TB_BC_EntInfo.CityCode AS [地州],
+	TB_BC_JobOffer.JobSn AS [招聘职位ID],
+	TB_BC_JobOffer.JobName AS [招聘职位],
+	TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+	TRIM (
+		STR(TB_BC_JobOffer.SalaryLow) + '—' + TRIM (STR(TB_BC_JobOffer.SalaryHigh))
+	) AS [薪资区间],
+	(
+		CASE
+			WHEN TB_BC_JobOffer.JobLearnLimited = 0 THEN '学历不限'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 10 THEN '小学'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 20 THEN '初中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 30 THEN '高中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 40 THEN '中专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 50 THEN '大专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 60 THEN '本科'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 70 THEN '硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 80 THEN '博士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 90 THEN '博士后'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 100 THEN '在读硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 110 THEN '无学历'
+			ELSE NULL
+		END
+	) AS 学历要求
+FROM
+	dbo.TB_BC_EntInfo
+	INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+	INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode
+WHERE
+	Ent_intro LIKE N'%旅游%'
+	OR Ent_intro LIKE N'%亲子%'
+	OR Ent_intro LIKE N'%自驾%'
+	OR Ent_intro LIKE N'%景区%'
+	OR Ent_intro LIKE N'%民宿%'
+	OR Ent_intro LIKE N'%度假%'
+	OR Ent_intro LIKE N'%休闲%'
+	OR Ent_intro LIKE N'%文旅康养%'
+	OR Ent_intro LIKE N'%养老基地%'
+	OR Ent_intro LIKE N'%康养基地%'
+UNION
+SELECT
+	'数字经济' AS 行业类别,
+	TB_BC_EntInfo.Ent_Name AS [企业名称],
+	TB_BC_EntInfo.CityCode AS [地州],
+	TB_BC_JobOffer.JobSn AS [招聘职位ID],
+	TB_BC_JobOffer.JobName AS [招聘职位],
+	TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+	TRIM (
+		STR(TB_BC_JobOffer.SalaryLow) + '—' + TRIM (STR(TB_BC_JobOffer.SalaryHigh))
+	) AS [薪资区间],
+	(
+		CASE
+			WHEN TB_BC_JobOffer.JobLearnLimited = 0 THEN '学历不限'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 10 THEN '小学'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 20 THEN '初中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 30 THEN '高中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 40 THEN '中专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 50 THEN '大专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 60 THEN '本科'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 70 THEN '硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 80 THEN '博士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 90 THEN '博士后'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 100 THEN '在读硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 110 THEN '无学历'
+			ELSE NULL
+		END
+	) AS 学历要求
+FROM
+	dbo.TB_BC_EntInfo
+	INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+	INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode
+WHERE
+	Ent_intro LIKE N'%数字经济%'
+	OR Ent_intro LIKE N'%智能终端%'
+	OR Ent_intro LIKE N'%半导体%'
+	OR Ent_intro LIKE N'%信创%'
+	OR Ent_intro LIKE N'%电子材料%'
+	OR Ent_intro LIKE N'%手机%'
+	OR Ent_intro LIKE N'%电脑%'
+	OR Ent_intro LIKE N'%平板电脑%'
+	OR Ent_intro LIKE N'%PC机%'
+	OR Ent_intro LIKE N'%电脑%'
+	OR Ent_intro LIKE N'%网络设备%'
+	OR Ent_intro LIKE N'%数码%'
+	OR Ent_intro LIKE N'%网络销售%'
+	OR Ent_intro LIKE N'%软件%'
+	OR Ent_intro LIKE N'%信息技术%'
+	OR Ent_intro LIKE N'%5G%'
+	OR Ent_intro LIKE N'%物联网%'
+	OR Ent_intro LIKE N'%大数据%'
+	OR Ent_intro LIKE N'%数字农业%'
+	OR Ent_intro LIKE N'%智能制造%'
+	OR Ent_intro LIKE N'%智慧旅游%'
+	OR Ent_intro LIKE N'%数字文创%'
+	OR Ent_intro LIKE N'%数字商贸%'
+	OR Ent_intro LIKE N'%智慧物流%'
+	OR Ent_intro LIKE N'%智慧园区%'
+	OR Ent_intro LIKE N'%智慧景区%'
+	OR Ent_intro LIKE N'%直播电商%'
+	OR Ent_intro LIKE N'%虚拟产业园%'
+	OR Ent_intro LIKE N'%数字经济园区%'
+UNION
+SELECT
+	'生物医药' AS 行业类别,
+	TB_BC_EntInfo.Ent_Name AS [企业名称],
+	TB_BC_EntInfo.CityCode AS [地州],
+	TB_BC_JobOffer.JobSn AS [招聘职位ID],
+	TB_BC_JobOffer.JobName AS [招聘职位],
+	TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+	TRIM (
+		STR(TB_BC_JobOffer.SalaryLow) + '—' + TRIM (STR(TB_BC_JobOffer.SalaryHigh))
+	) AS [薪资区间],
+	(
+		CASE
+			WHEN TB_BC_JobOffer.JobLearnLimited = 0 THEN '学历不限'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 10 THEN '小学'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 20 THEN '初中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 30 THEN '高中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 40 THEN '中专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 50 THEN '大专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 60 THEN '本科'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 70 THEN '硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 80 THEN '博士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 90 THEN '博士后'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 100 THEN '在读硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 110 THEN '无学历'
+			ELSE NULL
+		END
+	) AS 学历要求
+FROM
+	dbo.TB_BC_EntInfo
+	INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+	INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode
+WHERE
+	Ent_intro LIKE N'%生物%'
+	OR Ent_intro LIKE N'%医药%'
+	OR Ent_intro LIKE N'%三七%'
+	OR Ent_intro LIKE N'%石斛%'
+	OR Ent_intro LIKE N'%天麻%'
+	OR Ent_intro LIKE N'%中药材%'
+	OR Ent_intro LIKE N'%GAP%'
+	OR Ent_intro LIKE N'%疫苗%'
+	OR Ent_intro LIKE N'%制药%'
+	OR Ent_intro LIKE N'%中药材%'
+	OR Ent_intro LIKE N'%仿制药%'
+UNION
+SELECT
+	'新材料产业' AS 行业类别,
+	TB_BC_EntInfo.Ent_Name AS [企业名称],
+	TB_BC_EntInfo.CityCode AS [地州],
+	TB_BC_JobOffer.JobSn AS [招聘职位ID],
+	TB_BC_JobOffer.JobName AS [招聘职位],
+	TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+	TRIM (
+		STR(TB_BC_JobOffer.SalaryLow) + '—' + TRIM (STR(TB_BC_JobOffer.SalaryHigh))
+	) AS [薪资区间],
+	(
+		CASE
+			WHEN TB_BC_JobOffer.JobLearnLimited = 0 THEN '学历不限'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 10 THEN '小学'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 20 THEN '初中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 30 THEN '高中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 40 THEN '中专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 50 THEN '大专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 60 THEN '本科'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 70 THEN '硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 80 THEN '博士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 90 THEN '博士后'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 100 THEN '在读硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 110 THEN '无学历'
+			ELSE NULL
+		END
+	) AS 学历要求
+FROM
+	dbo.TB_BC_EntInfo
+	INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+	INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode
+WHERE
+	Ent_intro LIKE N'%锂%'
+	OR Ent_intro LIKE N'%电池%'
+	OR Ent_intro LIKE N'%贵金属%'
+	OR Ent_intro LIKE N'%磷酸铁锂%'
+	OR Ent_intro LIKE N'%铝塑膜%'
+	OR Ent_intro LIKE N'%锡%'
+	OR Ent_intro LIKE N'%钛%'
+	OR Ent_intro LIKE N'%光电子%'
+	OR Ent_intro LIKE N'%镓%'
+	OR Ent_intro LIKE N'%液态金属%'
+	OR Ent_intro LIKE N'%半导体%'
+	OR Ent_intro LIKE N'%新材料%'
+UNION
+SELECT
+	'烟草产业' AS 行业类别,
+	TB_BC_EntInfo.Ent_Name AS [企业名称],
+	TB_BC_EntInfo.CityCode AS [地州],
+	TB_BC_JobOffer.JobSn AS [招聘职位ID],
+	TB_BC_JobOffer.JobName AS [招聘职位],
+	TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+	TRIM (
+		STR(TB_BC_JobOffer.SalaryLow) + '—' + TRIM (STR(TB_BC_JobOffer.SalaryHigh))
+	) AS [薪资区间],
+	(
+		CASE
+			WHEN TB_BC_JobOffer.JobLearnLimited = 0 THEN '学历不限'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 10 THEN '小学'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 20 THEN '初中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 30 THEN '高中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 40 THEN '中专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 50 THEN '大专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 60 THEN '本科'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 70 THEN '硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 80 THEN '博士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 90 THEN '博士后'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 100 THEN '在读硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 110 THEN '无学历'
+			ELSE NULL
+		END
+	) AS 学历要求
+FROM
+	dbo.TB_BC_EntInfo
+	INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+	INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode
+WHERE
+	Ent_intro LIKE N'%烟叶%'
+	OR Ent_intro LIKE N'%烟机%'
+	OR Ent_intro LIKE N'%卷烟%'
+	OR Ent_intro LIKE N'%烟草%'
+	OR Ent_intro LIKE N'%烤烟%'
+	OR Ent_intro LIKE N'%烟草科学%'
+	OR Ent_intro LIKE N'%降焦减害%'
+UNION
+SELECT
+	'绿色能源产业' AS 行业类别,
+	TB_BC_EntInfo.Ent_Name AS [企业名称],
+	TB_BC_EntInfo.CityCode AS [地州],
+	TB_BC_JobOffer.JobSn AS [招聘职位ID],
+	TB_BC_JobOffer.JobName AS [招聘职位],
+	TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+	TRIM (
+		STR(TB_BC_JobOffer.SalaryLow) + '—' + TRIM (STR(TB_BC_JobOffer.SalaryHigh))
+	) AS [薪资区间],
+	(
+		CASE
+			WHEN TB_BC_JobOffer.JobLearnLimited = 0 THEN '学历不限'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 10 THEN '小学'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 20 THEN '初中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 30 THEN '高中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 40 THEN '中专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 50 THEN '大专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 60 THEN '本科'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 70 THEN '硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 80 THEN '博士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 90 THEN '博士后'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 100 THEN '在读硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 110 THEN '无学历'
+			ELSE NULL
+		END
+	) AS 学历要求
+FROM
+	dbo.TB_BC_EntInfo
+	INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+	INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode
+WHERE
+	Ent_intro LIKE N'%绿色能源%'
+	OR Ent_intro LIKE N'%能源%'
+	OR Ent_intro LIKE N'%清洁能源%'
+	OR Ent_intro LIKE N'%水电%'
+	OR Ent_intro LIKE N'%可再生能源%'
+	OR Ent_intro LIKE N'%电网%'
+	OR Ent_intro LIKE N'%煤电%'
+	OR Ent_intro LIKE N'%页岩气%'
+	OR Ent_intro LIKE N'%储能%'
+	OR Ent_intro LIKE N'%蓄能%'
+UNION
+SELECT
+	'高端制造产业' AS 行业类别,
+	TB_BC_EntInfo.Ent_Name AS [企业名称],
+	TB_BC_EntInfo.CityCode AS [地州],
+	TB_BC_JobOffer.JobSn AS [招聘职位ID],
+	TB_BC_JobOffer.JobName AS [招聘职位],
+	TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+	TRIM (
+		STR(TB_BC_JobOffer.SalaryLow) + '—' + TRIM (STR(TB_BC_JobOffer.SalaryHigh))
+	) AS [薪资区间],
+	(
+		CASE
+			WHEN TB_BC_JobOffer.JobLearnLimited = 0 THEN '学历不限'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 10 THEN '小学'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 20 THEN '初中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 30 THEN '高中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 40 THEN '中专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 50 THEN '大专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 60 THEN '本科'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 70 THEN '硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 80 THEN '博士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 90 THEN '博士后'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 100 THEN '在读硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 110 THEN '无学历'
+			ELSE NULL
+		END
+	) AS 学历要求
+FROM
+	dbo.TB_BC_EntInfo
+	INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+	INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode
+WHERE
+	Ent_intro LIKE N'%制造%'
+	OR Ent_intro LIKE N'%磷%'
+	OR Ent_intro LIKE N'%硅%'
+	OR Ent_intro LIKE N'%变压器%'
+	OR Ent_intro LIKE N'%电机%'
+	OR Ent_intro LIKE N'%风电%'
+	OR Ent_intro LIKE N'%电力%'
+	OR Ent_intro LIKE N'%机床%'
+	OR Ent_intro LIKE N'%车床%'
+	OR Ent_intro LIKE N'%光机%'
+	OR Ent_intro LIKE N'%数控%'
+	OR Ent_intro LIKE N'%物流%'
+	OR Ent_intro LIKE N'%自动化物流装备%'
+	OR Ent_intro LIKE N'%铁路养护装备%'
+	OR Ent_intro LIKE N'%农机装备%'
+	OR Ent_intro LIKE N'%内燃机%'
+	OR Ent_intro LIKE N'%电子设备%'
+	OR Ent_intro LIKE N'%节能环保%'
+UNION
+SELECT
+	'绿色铝产业' AS 行业类别,
+	TB_BC_EntInfo.Ent_Name AS [企业名称],
+	TB_BC_EntInfo.CityCode AS [地州],
+	TB_BC_JobOffer.JobSn AS [招聘职位ID],
+	TB_BC_JobOffer.JobName AS [招聘职位],
+	TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+	TRIM (
+		STR(TB_BC_JobOffer.SalaryLow) + '—' + TRIM (STR(TB_BC_JobOffer.SalaryHigh))
+	) AS [薪资区间],
+	(
+		CASE
+			WHEN TB_BC_JobOffer.JobLearnLimited = 0 THEN '学历不限'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 10 THEN '小学'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 20 THEN '初中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 30 THEN '高中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 40 THEN '中专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 50 THEN '大专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 60 THEN '本科'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 70 THEN '硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 80 THEN '博士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 90 THEN '博士后'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 100 THEN '在读硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 110 THEN '无学历'
+			ELSE NULL
+		END
+	) AS 学历要求
+FROM
+	dbo.TB_BC_EntInfo
+	INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+	INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode
+WHERE
+	Ent_intro LIKE N'%铝%'
+UNION
+SELECT
+	'光伏之都产业' AS 行业类别,
+	TB_BC_EntInfo.Ent_Name AS [企业名称],
+	TB_BC_EntInfo.CityCode AS [地州],
+	TB_BC_JobOffer.JobSn AS [招聘职位ID],
+	TB_BC_JobOffer.JobName AS [招聘职位],
+	TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+	TRIM (
+		STR(TB_BC_JobOffer.SalaryLow) + '—' + TRIM (STR(TB_BC_JobOffer.SalaryHigh))
+	) AS [薪资区间],
+	(
+		CASE
+			WHEN TB_BC_JobOffer.JobLearnLimited = 0 THEN '学历不限'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 10 THEN '小学'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 20 THEN '初中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 30 THEN '高中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 40 THEN '中专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 50 THEN '大专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 60 THEN '本科'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 70 THEN '硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 80 THEN '博士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 90 THEN '博士后'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 100 THEN '在读硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 110 THEN '无学历'
+			ELSE NULL
+		END
+	) AS 学历要求
+FROM
+	dbo.TB_BC_EntInfo
+	INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+	INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode
+WHERE
+	Ent_intro LIKE N'%光伏%'
+UNION
+SELECT
+	'高原特色现代农业产业' AS 行业类别,
+	TB_BC_EntInfo.Ent_Name AS [企业名称],
+	TB_BC_EntInfo.CityCode AS [地州],
+	TB_BC_JobOffer.JobSn AS [招聘职位ID],
+	TB_BC_JobOffer.JobName AS [招聘职位],
+	TB_BC_JobOffer.Job_People_Count AS [招聘人数],
+	TRIM (
+		STR(TB_BC_JobOffer.SalaryLow) + '—' + TRIM (STR(TB_BC_JobOffer.SalaryHigh))
+	) AS [薪资区间],
+	(
+		CASE
+			WHEN TB_BC_JobOffer.JobLearnLimited = 0 THEN '学历不限'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 10 THEN '小学'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 20 THEN '初中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 30 THEN '高中'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 40 THEN '中专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 50 THEN '大专'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 60 THEN '本科'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 70 THEN '硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 80 THEN '博士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 90 THEN '博士后'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 100 THEN '在读硕士'
+			WHEN TB_BC_JobOffer.JobLearnLimited = 110 THEN '无学历'
+			ELSE NULL
+		END
+	) AS 学历要求
+FROM
+	dbo.TB_BC_EntInfo
+	INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+	INNER JOIN dbo.TB_BC_YnCity ON TB_BC_EntInfo.CityCode = TB_BC_YnCity.CityCode
+WHERE
+	Ent_intro LIKE N'%绿色农业%'
+	OR Ent_intro LIKE N'%化肥%'
+	OR Ent_intro LIKE N'%猪%'
+	OR Ent_intro LIKE N'%农药%'
+	OR Ent_intro LIKE N'%花卉%'
+	OR Ent_intro LIKE N'%茶叶%'
+	OR Ent_intro LIKE N'%水果%'
+	OR Ent_intro LIKE N'%坚果%'
+	OR Ent_intro LIKE N'%咖啡%'
+	OR Ent_intro LIKE N'%中药材%'
+	OR Ent_intro LIKE N'%牛羊%'
+	OR Ent_intro LIKE N'%乡村旅游%'
+	OR Ent_intro LIKE N'%烟草%'
+	OR Ent_intro LIKE N'%甘蔗%'
+	OR Ent_intro LIKE N'%天然橡胶%'
+	OR Ent_intro LIKE N'%绿色食品%'
+	OR Ent_intro LIKE N'%食用菌%'
+
+DECLARE @place VARCHAR (20) = '%530100%';
+
+DECLARE @place_name VARCHAR (20) = '昆明';
+
+DECLARE @pos VARCHAR (20) = '%销售%';
+
+DECLARE @min_year INT = 21;
+
+DECLARE @max_year INT = 30;
+
+DECLARE @update_time DATETIME = '2020-11-1 00:00:00';
+
+SELECT
+	TB_Person.UserID,
+	TB_Person.TrueName AS "姓名",
+	TB_Person.Phone As "联系方式",
+	CASE
+		TB_Person.Sex
+		WHEN 1 THEN '男'
+		WHEN 2 THEN '女'
+		ELSE '未知'
+	END As "性别",
+	DATEDIFF(YEAR, TB_Person.BirthDay, GETDATE()) As "年龄",
+	TB_Person.Address As "通讯地址",
+	CASE
+		WHEN TB_Person.WantJobPlace LIKE @place THEN @place_name
+	END As "期望工作地点",
+	TB_Person.WantJobName As "期望工作",
+	CASE
+		TB_Person.WantSalary
+		WHEN 0 THEN '不限'
+		WHEN 1 THEN '1000-1500'
+		WHEN 2 THEN '1500-1999'
+		WHEN 3 THEN '2000-2999'
+		WHEN 4 THEN '3000-4499'
+		WHEN 5 THEN '4500-5999'
+		WHEN 6 THEN '6000-7999'
+		WHEN 7 THEN '8000-9999'
+		WHEN 8 THEN '10000-14999'
+		WHEN 9 THEN '15000-19999'
+		WHEN 10 THEN '20000-29999'
+		WHEN 11 THEN '30000-49999'
+		WHEN 12 THEN '50000以上'
+		ELSE '面议'
+	END As "期望薪资",
+	CASE
+		TB_Person.CanWorkTime
+		WHEN 1 THEN '3天内到岗'
+		WHEN 2 THEN '1周内到岗'
+		WHEN 3 THEN '1月内到岗'
+		WHEN 4 THEN '1个月以上'
+		ELSE '随时到岗'
+	END As "到岗时间",
+	CASE
+		TB_Person.EduDegree
+		WHEN 50 THEN '大专'
+		WHEN 60 THEN '本科'
+		WHEN 70 THEN '硕士'
+		WHEN 80 THEN '博士'
+		WHEN 90 THEN '博士后'
+		WHEN 100 THEN '在读硕士'
+		ELSE '未知'
+	END As "最高教育",
+	TB_Person.UpdateTime As "更新时间"
+FROM
+	dbo.TB_Person
+WHERE
+	TB_Person.WantJobName LIKE @pos
+	AND TB_Person.WantJobPlace LIKE @place
+	AND TB_Person.EduDegree >= 50
+	AND TB_Person.EduDegree <= 100
+	AND DATEDIFF(YEAR, TB_Person.BirthDay, GETDATE()) >= @min_year
+	AND DATEDIFF(YEAR, TB_Person.BirthDay, GETDATE()) <= @max_year
+	AND TB_Person.UpdateTime >= @update_time
+
+SELECT
+	*
+FROM
+	(
+		SELECT
+			*,
+			row_number () OVER (
+				partition BY a.district
+				ORDER BY
+					a.申请人数 DESC
+			) AS rowNum
+		FROM
+			(
+				SELECT
+					COUNT (DISTINCT (TB_BC_JwApplyJob.JwSn)) AS [申请人数],
+					LEFT (TB_BC_JobOffer.JobWorkplaceCode, 4) AS district,
+					TB_BC_JobOffer.JobCategory AS [岗位类别]
+				FROM
+					dbo.TB_BC_JobOffer
+					INNER JOIN dbo.TB_BC_JwApplyJob ON TB_BC_JobOffer.JobSn = TB_BC_JwApplyJob.JobSn
+					INNER JOIN dbo.TB_BC_EntInfo ON TB_BC_JobOffer.EntSn = TB_BC_EntInfo.Ent_SN
+				WHERE
+					YEAR (TB_BC_JwApplyJob.ApplyDate) = 2023
+					AND MONTH (TB_BC_JwApplyJob.ApplyDate) <> 11
+					AND LEFT (TB_BC_JobOffer.JobWorkplaceCode, 2) = 33
+				GROUP BY
+					LEFT (TB_BC_JobOffer.JobWorkplaceCode, 4),
+					TB_BC_JobOffer.JobCategory
+			) a
+	) ranked
+WHERE
+	ranked.rowNum <= 10
+ORDER BY
+	ranked.申请人数 DESC
+
+Declare @year_no INT
+SET
+	@year_no = 2023
+SELECT
+	DISTINCT dbo.TB_BC_EntInfo.Ent_SN AS [企业],
+	LEFT (dbo.TB_BC_YnCity.YnId, 4) AS [地州],
+	MONTH (dbo.TB_BC_JobOffer.Job_Publish_Date) AS [月份],
+	YEAR (dbo.TB_BC_JobOffer.Job_Publish_Date) AS [年]
+FROM
+	dbo.TB_BC_EntInfo
+	INNER JOIN dbo.TB_BC_JobOffer ON dbo.TB_BC_EntInfo.Ent_SN = dbo.TB_BC_JobOffer.EntSn
+	INNER JOIN dbo.TB_BC_YnCity ON dbo.TB_BC_EntInfo.CityCode = dbo.TB_BC_YnCity.CityCode
+WHERE
+	YEAR (dbo.TB_BC_JobOffer.Job_Publish_Date) >= @year_no
+	AND LEFT (dbo.TB_BC_YnCity.YnId, 2) = 53
+ORDER BY
+	[地州] ASC
+
+-- 声明时间变量
+DECLARE @21stime date
+SET
+	@21stime = '2021-01-01 00:00:00' DECLARE @21etime date
+SET
+	@21etime = '2021-10-01 00:00:00' -- 总数
+	DECLARE @18_25Num int DECLARE @26_30Num int DECLARE @31_35Num int DECLARE @36_40Num int DECLARE @41_45Num int DECLARE @46_50Num int DECLARE @50_Num int DECLARE @other int
+set
+	@18_25Num =(
+		SELECT
+			Count(1)
+		FROM
+			dbo.TB_BC_JwApplyJob
+			INNER JOIN dbo.TB_BC_JwInfo ON TB_BC_JwApplyJob.JwSn = TB_BC_JwInfo.Jw_SN
+		WHERE
+			TB_BC_JwApplyJob.ApplyDate >= @21stime
+			AND TB_BC_JwApplyJob.ApplyDate <= @21etime
+			and DATEDIFF(YEAR, Res_birthday, GETDATE()) >= 18
+			and DATEDIFF(YEAR, Res_birthday, GETDATE()) <= 25
+			and Res_birthday is not null
+			AND Res_birthday <> '1900-01-01 00:00:00.000'
+	)
+set
+	@26_30Num = (
+		SELECT
+			Count(1)
+		FROM
+			dbo.TB_BC_JwApplyJob
+			INNER JOIN dbo.TB_BC_JwInfo ON TB_BC_JwApplyJob.JwSn = TB_BC_JwInfo.Jw_SN
+		WHERE
+			TB_BC_JwApplyJob.ApplyDate >= @21stime
+			AND TB_BC_JwApplyJob.ApplyDate <= @21etime
+			and DATEDIFF(YEAR, Res_birthday, GETDATE()) >= 26
+			and DATEDIFF(YEAR, Res_birthday, GETDATE()) <= 30
+			and Res_birthday is not null
+			AND Res_birthday <> '1900-01-01 00:00:00.000'
+	)
+set
+	@31_35Num = (
+		SELECT
+			Count(1)
+		FROM
+			dbo.TB_BC_JwApplyJob
+			INNER JOIN dbo.TB_BC_JwInfo ON TB_BC_JwApplyJob.JwSn = TB_BC_JwInfo.Jw_SN
+		WHERE
+			TB_BC_JwApplyJob.ApplyDate >= @21stime
+			AND TB_BC_JwApplyJob.ApplyDate <= @21etime
+			and DATEDIFF(YEAR, Res_birthday, GETDATE()) >= 31
+			and DATEDIFF(YEAR, Res_birthday, GETDATE()) <= 35
+			and Res_birthday is not null
+			AND Res_birthday <> '1900-01-01 00:00:00.000'
+	)
+set
+	@36_40Num = (
+		SELECT
+			Count(1)
+		FROM
+			dbo.TB_BC_JwApplyJob
+			INNER JOIN dbo.TB_BC_JwInfo ON TB_BC_JwApplyJob.JwSn = TB_BC_JwInfo.Jw_SN
+		WHERE
+			TB_BC_JwApplyJob.ApplyDate >= @21stime
+			AND TB_BC_JwApplyJob.ApplyDate <= @21etime
+			and DATEDIFF(YEAR, Res_birthday, GETDATE()) >= 36
+			and DATEDIFF(YEAR, Res_birthday, GETDATE()) <= 40
+			and Res_birthday is not null
+			AND Res_birthday <> '1900-01-01 00:00:00.000'
+	)
+set
+	@41_45Num = (
+		SELECT
+			Count(1)
+		FROM
+			dbo.TB_BC_JwApplyJob
+			INNER JOIN dbo.TB_BC_JwInfo ON TB_BC_JwApplyJob.JwSn = TB_BC_JwInfo.Jw_SN
+		WHERE
+			TB_BC_JwApplyJob.ApplyDate >= @21stime
+			AND TB_BC_JwApplyJob.ApplyDate <= @21etime
+			and DATEDIFF(YEAR, Res_birthday, GETDATE()) >= 41
+			and DATEDIFF(YEAR, Res_birthday, GETDATE()) <= 45
+			and Res_birthday is not null
+			AND Res_birthday <> '1900-01-01 00:00:00.000'
+	)
+set
+	@46_50Num = (
+		SELECT
+			Count(1)
+		FROM
+			dbo.TB_BC_JwApplyJob
+			INNER JOIN dbo.TB_BC_JwInfo ON TB_BC_JwApplyJob.JwSn = TB_BC_JwInfo.Jw_SN
+		WHERE
+			TB_BC_JwApplyJob.ApplyDate >= @21stime
+			AND TB_BC_JwApplyJob.ApplyDate <= @21etime
+			and DATEDIFF(YEAR, Res_birthday, GETDATE()) >= 46
+			and DATEDIFF(YEAR, Res_birthday, GETDATE()) <= 50
+			and Res_birthday is not null
+			AND Res_birthday <> '1900-01-01 00:00:00.000'
+	)
+set
+	@50_Num = (
+		SELECT
+			Count(1)
+		FROM
+			dbo.TB_BC_JwApplyJob
+			INNER JOIN dbo.TB_BC_JwInfo ON TB_BC_JwApplyJob.JwSn = TB_BC_JwInfo.Jw_SN
+		WHERE
+			TB_BC_JwApplyJob.ApplyDate >= @21stime
+			AND TB_BC_JwApplyJob.ApplyDate <= @21etime
+			and DATEDIFF(YEAR, Res_birthday, GETDATE()) > 50
+			and Res_birthday is not null
+			AND Res_birthday <> '1900-01-01 00:00:00.000'
+	)
+set
+	@other = (
+		SELECT
+			Count(1)
+		FROM
+			dbo.TB_BC_JwApplyJob
+			INNER JOIN dbo.TB_BC_JwInfo ON TB_BC_JwApplyJob.JwSn = TB_BC_JwInfo.Jw_SN
+		WHERE
+			TB_BC_JwApplyJob.ApplyDate >= @21stime
+			AND TB_BC_JwApplyJob.ApplyDate <= @21etime
+			and (
+				Res_birthday is null
+				or Res_birthday = '1900-01-01 00:00:00.000'
+				or TB_BC_JwInfo.Jw_SN is null
+			)
+	)
+SELECT
+	'18-25岁' as 年龄分布,
+	@18_25Num as 数量
+UNION
+SELECT
+	'26-30岁' as 年龄分布,
+	@26_30Num as 数量
+UNION
+SELECT
+	'31-35岁' as 年龄分布,
+	@31_35Num as 数量
+UNION
+SELECT
+	'36-40岁' as 年龄分布,
+	@36_40Num as 数量
+UNION
+SELECT
+	'41-45岁' as 年龄分布,
+	@41_45Num as 数量
+UNION
+SELECT
+	'46-50岁' as 年龄分布,
+	@46_50Num as 数量
+UNION
+SELECT
+	'50以上' as 年龄分布,
+	@50_Num as 数量
+UNION
+SELECT
+	'其他' as 年龄分布,
+	@other as 数量
+
+--2020-04-03 By yus
+--按持有证书查询用户，年龄在22-45岁之间
+--提出部门：项目部  2020-04-03
+SELECT
+	a.UserID,
+	a.TrueName '姓名',
+	CONVERT(char(10), c.RegTime, 120) AS '注册时间',
+	a.Address '住址',
+	DATEDIFF(YEAR, a.BirthDay, GETDATE()) '年龄',
+	b.CertName '持有证书',
+	b.WhichYear '获得时间',
+	a.WantJobName '意向岗位',
+	d.dispname '意向工作地'
+FROM
+	TB_Person a
+	INNER JOIN TB_Person_Cert b on a.UserID = b.userid
+	INNER JOIN TB_User c on a.UserID = c.UserID
+	left JOIN TB_Areas d on d.id in (
+		select
+			res
+		from
+			[ufnSplit](',', a.WantJobPlace)
+	)
+WHERE
+	DATEDIFF(YEAR, a.BirthDay, GETDATE()) BETWEEN 22
+	and 45
+	AND b.CertName like '%施工员%'
+
+DECLARE @comID INTEGER DECLARE @startTime DATE
+set
+	@comID = 1961054
+set
+	@startTime = '2019-01-01'
+SELECT
+	CONVERT (nvarchar (20), a.DownTime, 120) as '下载时间',
+	a.PUserID as '简历编号',
+	a.DisplayName as '姓名',
+	a.WantJobName as '求职意向',
+	CASE
+		a.Sex
+		WHEN 1 THEN '男'
+		WHEN 2 THEN '女'
+		ELSE '未知'
+	END AS '性别',
+	datediff(yy, a.BirthDay, GETDATE()) AS '年龄',
+	CONVERT (nvarchar (10), a.BirthDay, 23) AS '生日',
+	CASE
+		a.EduDegree
+		WHEN 10 THEN '小学'
+		WHEN 20 THEN '初中'
+		WHEN 30 THEN '高中'
+		WHEN 40 THEN '中专'
+		WHEN 50 THEN '大专'
+		WHEN 60 THEN '本科'
+		WHEN 70 THEN '硕士'
+		WHEN 100 THEN '在读硕士'
+		WHEN 80 THEN '博士'
+		WHEN 90 THEN '博士后'
+		WHEN 110 THEN '无学历'
+		ELSE '未知'
+	END AS '学历',
+	b.SchoolName as '毕业学校',
+	b.Speciality as '专业',
+	CASE
+		a.JobExp
+		WHEN 1 THEN '应届毕业生'
+		WHEN 2 THEN '1年'
+		WHEN 3 THEN '2年'
+		WHEN 4 THEN '3年'
+		WHEN 5 THEN '4年'
+		WHEN 6 THEN '5年'
+		WHEN 7 THEN '6年'
+		WHEN 8 THEN '7年'
+		WHEN 9 THEN '8年'
+		WHEN 10 THEN '10年以上'
+		WHEN 20 THEN '20年以上'
+		WHEN 30 THEN '30年以上'
+		WHEN 50 THEN '退休人员'
+		ELSE '未知'
+	END AS '工作经验'
+FROM
+	ViewDownloadedResume a
+	LEFT JOIN ViewPersonTopEdu b ON a.PUserID = b.UserID
+WHERE
+	a.CUserID = @comID
+	and a.DownTime >= @startTime
+ORDER BY
+	DownTime DESC
+
+SELECT
+  Id,
+  ViewSaleInfo.FullName as '公司名称',
+  ViewSaleInfo.EmpName as '营销员',
+  ViewSaleInfo.GroupName as '销售部门',
+  CASE
+    ViewSaleInfo.VipClass
+    WHEN 23 THEN '实惠型'
+    WHEN 101 THEN '金卡'
+    WHEN 102 THEN '银卡'
+    WHEN 103 THEN '普通年卡'
+    WHEN 201 THEN '7天试用版'
+    WHEN 202 THEN '15天试用版'
+    WHEN 205 THEN 'HR尝鲜版'
+    WHEN 206 THEN 'HR入门版'
+    WHEN 207 THEN 'HR标准版'
+    WHEN 208 THEN 'HR专业版'
+    WHEN 209 THEN 'HR精英版'
+    WHEN 210 THEN 'HR大师版'
+    WHEN 213 THEN '增加区域'
+    WHEN 214 THEN '单独广告'
+    WHEN 215 THEN '置换套餐'
+    WHEN 211 THEN 'HR名企尊享版'
+    WHEN 218 THEN '(劳务)普通版'
+    WHEN 219 THEN '(劳务)升级版'
+    WHEN 226 THEN '扶贫套餐'
+    ELSE '无'
+  END AS 'VIP类型',
+  ViewSaleInfo.RealPrice as '实际价格',
+  ViewSaleInfo.CurrentServiceEndDate as '到期时间'
+FROM
+  dbo.ViewSaleInfo
+WHERE
+  (
+    PayDate >= '2019-12-01 00:00'
+    and PayDate <= '2019-12-31 23:59'
+  )
+  and RecordStatus = 1
+  and LockRegSale = 1
+  and LockConfirmPay = 1
+  and ParentGroupID = 0
+
+DECLARE @start date = '2022-01-01',
+@end date = '2022-01-31';
+
+select
+	a.RegType as '注册端编码',
+	case
+		a.RegType
+		when 0 then '电脑版普通注册'
+		when 1 then 'H5版普通注册'
+		when 3 then 'APP注册'
+		when 4 then '百度API'
+		when 9 then '采集'
+		when 10 then '电脑版注册'
+		when 11 then '安卓App注册'
+		when 12 then 'IOSApp注册'
+		when 13 then '微信小程序注册'
+		when 14 then '手机网页版注册'
+		when 15 then '快速注册-电脑版'
+		when 16 then '快速注册-手机网页'
+		when 17 then '快速注册-微信小程序'
+		when 18 then '快速注册-安卓APP'
+		when 19 then '快速注册-IOSApp'
+		when 30 then '企业专享-微信小程序'
+		when 31 then '企业专享招聘-字节跳动小程序'
+		when 50 then '招考通-微信小程序'
+		when 51 then '招考通-H5'
+	end '注册端名称',
+	count(UserID) '注册数'
+from
+	TB_User a
+where
+	a.UserType = 1
+	and a.RegTime BETWEEN @start
+	and @end
+group by
+	a.RegType
+order by
+	a.RegType
+
+DECLARE @start date = '2022-01-01';
+
+DECLARE @end date = '2022-01-31';
+
+select
+	*
+from
+	(
+		select
+			a.RegType as RegType,
+			case
+				a.RegType
+				when 0 then '电脑版普通注册'
+				when 1 then 'H5版普通注册'
+				when 3 then 'APP注册'
+				when 4 then '百度API'
+				when 9 then '采集'
+				when 10 then '电脑版注册'
+				when 11 then '安卓App注册'
+				when 12 then 'IOSApp注册'
+				when 13 then '微信小程序注册'
+				when 14 then '手机网页版注册'
+				when 15 then '快速注册-电脑版'
+				when 16 then '快速注册-手机网页'
+				when 17 then '快速注册-微信小程序'
+				when 18 then '快速注册-安卓APP'
+				when 19 then '快速注册-IOSApp'
+				when 30 then '企业专享-微信小程序'
+				when 31 then '企业专享招聘-字节跳动小程序'
+				when 50 then '招考通-微信小程序'
+				when 51 then '招考通-H5'
+			end RegTypeName,
+			(
+				DATEPART(yyyy, GETDATE()) - DATEPART(yyyy, b.BirthDay)
+			) Age,
+			count(a.UserID) RegCount
+		from
+			TB_User a
+			INNER JOIN TB_Person b on a.UserID = b.UserID
+		where
+			a.UserType = 1
+			and a.RegTime BETWEEN @start
+			and @end
+		group by
+			a.RegType,
+			(
+				DATEPART(yyyy, GETDATE()) - DATEPART(yyyy, b.BirthDay)
+			)
+	) t PIVOT(
+		max(RegCount) FOR [Age] IN(
+			[16],
+			[17],
+			[18],
+			[19],
+			[20],
+			[21],
+			[22],
+			[23],
+			[24],
+			[25],
+			[26],
+			[27],
+			[28],
+			[29],
+			[30],
+			[31],
+			[32],
+			[33],
+			[34],
+			[35],
+			[36],
+			[37],
+			[38],
+			[39],
+			[40],
+			[41],
+			[42],
+			[43],
+			[44],
+			[45],
+			[46],
+			[47],
+			[48],
+			[49],
+			[50],
+			[51],
+			[52],
+			[53],
+			[54],
+			[55],
+			[56],
+			[57],
+			[58],
+			[59],
+			[60]
+		)
+	) AS p
+
+DECLARE @start date = '2020-08-03';
+
+DECLARE @end date = '2020-08-09';
+
+SELECT
+	(
+		DATEPART(yyyy, GETDATE()) - DATEPART(yyyy, b.BirthDay)
+	) Age,
+	COUNT (a.UserID) RegCount
+FROM
+	TB_User a
+	INNER JOIN TB_Person b ON a.UserID = b.UserID
+WHERE
+	a.UserType = 1
+	AND a.RegTime BETWEEN @start
+	AND @end
+GROUP BY
+	(
+		DATEPART(yyyy, GETDATE()) - DATEPART(yyyy, b.BirthDay)
+	)
+ORDER BY
+	(
+		DATEPART(yyyy, GETDATE()) - DATEPART(yyyy, b.BirthDay)
+	)
+
+SELECT
+	Ent_Fund,count(1)
+FROM
+	dbo.TB_BC_EntInfo
+	INNER JOIN
+	dbo.TB_BC_YnzpId
+	ON 
+		TB_BC_EntInfo.Ent_SN = TB_BC_YnzpId.BczpId
+	INNER JOIN
+	dbo.TB_Company
+	ON 
+		TB_BC_YnzpId.YnzpId = TB_Company.UserID
+WHERE 1=1
+and VipType != 2
+GROUP BY Ent_Fund
+
+DECLARE @promotionId INT = 14;
+SELECT 
+	TB_SaleRecord.EmpName As "员工姓名", 
+	Count(Distinct(TB_SaleRecord.UserID)) AS "签单数"
+FROM
+	dbo.TB_SaleRecord
+WHERE
+	TB_SaleRecord.ActId = @promotionId
+Group By TB_SaleRecord.EmpName
+
+DECLARE @comID INTEGER DECLARE @startTime DATE DECLARE @endTime DATE
+set
+	@comID = 1961054
+set
+	@startTime = '2019-12-16'
+set
+	@endTime = '2020-12-15'
+SELECT
+	CONVERT (nvarchar (20), a.AddTime, 120) as '投递时间',
+	a.JobName as '投递职位',
+	a.UserID as '简历编号',
+	a.TrueName as '姓名',
+	CASE
+		a.Sex
+		WHEN 1 THEN '男'
+		WHEN 2 THEN '女'
+		ELSE '未知'
+	END AS '性别',
+	datediff(yy, a.BirthDay, GETDATE()) AS '年龄',
+	CONVERT (nvarchar (10), a.BirthDay, 23) AS '生日',
+	CASE
+		a.EduDegree
+		WHEN 10 THEN '小学'
+		WHEN 20 THEN '初中'
+		WHEN 30 THEN '高中'
+		WHEN 40 THEN '中专'
+		WHEN 50 THEN '大专'
+		WHEN 60 THEN '本科'
+		WHEN 70 THEN '硕士'
+		WHEN 100 THEN '在读硕士'
+		WHEN 80 THEN '博士'
+		WHEN 90 THEN '博士后'
+		WHEN 110 THEN '无学历'
+		ELSE '未知'
+	END AS '学历',
+	b.SchoolName as '毕业学校',
+	b.Speciality as '专业',
+	CASE
+		a.JobExp
+		WHEN 1 THEN '应届毕业生'
+		WHEN 2 THEN '1年'
+		WHEN 3 THEN '2年'
+		WHEN 4 THEN '3年'
+		WHEN 5 THEN '4年'
+		WHEN 6 THEN '5年'
+		WHEN 7 THEN '6年'
+		WHEN 8 THEN '7年'
+		WHEN 9 THEN '8年'
+		WHEN 10 THEN '10年以上'
+		WHEN 20 THEN '20年以上'
+		WHEN 30 THEN '30年以上'
+		WHEN 50 THEN '退休人员'
+		ELSE '未知'
+	END AS '工作经验'
+FROM
+	ViewReceivedJobApply a
+	LEFT JOIN ViewPersonTopEdu b ON a.UserID = b.UserID
+WHERE
+	a.ComID = @comID
+	and a.AddTime >= @startTime
+	and a.AddTime <= @endTime
+ORDER BY
+	AddTime DESC
+
+--author:huadz
+DECLARE @deadline INT = -90
+SELECT
+  A.UserID As '公司Id',
+  A.CompanyName AS '公司名称',
+  C.EmpName AS '员工姓名',
+  D.DeptName AS '所属组',
+  B.ServiceEndDate AS 'VIP到期时间',
+  CASE
+    B.VipClass
+    WHEN 23 THEN '实惠型'
+    WHEN 101 THEN '金卡'
+    WHEN 102 THEN '银卡'
+    WHEN 103 THEN '普通年卡'
+    WHEN 201 THEN '7 天试用版'
+    WHEN 202 THEN '15 天试用版'
+    WHEN 205 THEN 'HR尝鲜版'
+    WHEN 206 THEN 'HR入门版'
+    WHEN 207 THEN 'HR标准版'
+    WHEN 208 THEN 'HR专业版'
+    WHEN 209 THEN 'HR精英版'
+    WHEN 210 THEN 'HR大师版'
+    WHEN 211 THEN 'HR名企尊享版'
+    WHEN 218 THEN '(劳务) 普通版'
+    WHEN 219 THEN '(劳务) 升级版'
+    ELSE '无'
+  END AS 'VIP类型'
+FROM
+  [dbo].[TB_Company] A
+  LEFT JOIN [dbo].[TB_CurrentComRight] B ON A.UserID = B.UserID
+  LEFT JOIN TB_Emp C ON A.EmpNo = C.EmpNo
+  LEFT JOIN TB_EmpGroup D ON C.GroupID = D.Id
+WHERE
+  B.ServiceEndDate BETWEEN DATEADD(DAY, @deadline, GETDATE())
+  AND GETDATE()
+ORDER BY
+  B.ServiceEndDate
+
+DECLARE @city INT = 3313;
+
+SELECT
+	COUNT (1) AS 岗位数,
+	SUM (TB_BC_JobOffer.Job_People_Count) AS [招聘人数],
+	TRIM (
+		STR(avg(TB_BC_JobOffer.SalaryLow)) + '—' + TRIM (STR(avg(TB_BC_JobOffer.SalaryHigh)))
+	) AS [薪资区间]
+FROM
+	[dbo].[TB_BC_JobOffer]
+WHERE
+	left(TB_BC_JobOffer.JobWorkplaceCode, 4) = @city
+	AND TB_BC_JobOffer.JobExpire >= getdate()
+
+SELECT
+	CAST(A.BczpId as varchar) + '_' + convert(varchar(10), Job_Publish_Date, 20) as Id,
+	A.YnzpId as UserID,
+	A.BczpId AS EntSn,
+	COUNT(*) as JobCount,
+	convert(varchar(10), Job_Publish_Date, 20) as PublishDate
+FROM
+	dbo.TB_BC_YnzpId AS A
+	INNER JOIN dbo.TB_BC_JobOffer AS B ON B.EntSn = A.BczpId
+GROUP BY
+	A.YnzpId,
+	A.BczpId,
+	convert(varchar(10), Job_Publish_Date, 20)
+ORDER BY
+	convert(varchar(10), Job_Publish_Date, 20)
+
+SELECT
+	CAST(A.BczpId as varchar) + '_' + convert(varchar(10), B.ApplyDate, 20) as Id,
+	A.YnzpId as UserID,
+	A.BczpId AS EntSn,
+	COUNT(*) as ReceivedResumes,
+	convert(varchar(10), B.ApplyDate, 20) as ApplyDate
+FROM
+	dbo.TB_BC_YnzpId AS A
+	INNER JOIN dbo.TB_BC_JwApplyJob AS B ON B.EntSn = A.BczpId
+GROUP BY
+	A.YnzpId,
+	A.BczpId,
+	convert(varchar(10), B.ApplyDate, 20)
+ORDER BY
+	convert(varchar(10), B.ApplyDate, 20)
+
+SELECT
+  CAST(A.BczpId as varchar) + '_' + convert(varchar(10), B.ApplyDate,20) as Id,
+	A.YnzpId as UserID,
+	A.BczpId AS EntSn,
+	COUNT(*) as ReceivedResumesIsRead,
+	convert(varchar(10), B.ApplyDate,20) as ApplyDate
+FROM
+	dbo.TB_BC_YnzpId AS A
+	INNER JOIN
+	dbo.TB_BC_JwApplyJob AS B
+	ON 
+		B.EntSn = A.BczpId
+	WHERE B.IsRead = 1
+GROUP BY
+  A.YnzpId,
+	A.BczpId,
+	convert(varchar(10), B.ApplyDate,20)
+ORDER BY convert(varchar(10), B.ApplyDate,20)
+
+SELECT
+	CAST(A.BczpId as varchar) + '_' + convert(varchar(10), B.RefreshTime, 20) as Id,
+	A.YnzpId as UserID,
+	A.BczpId AS EntSn,
+	COUNT(*) as RefreshCount,
+	convert(varchar(10), B.RefreshTime, 20) as RefreshTime
+FROM
+	dbo.TB_BC_YnzpId AS A
+	INNER JOIN dbo.TB_BC_JobRefreshLog AS B ON B.EntSn = A.BczpId
+GROUP BY
+	A.YnzpId,
+	A.BczpId,
+	convert(varchar(10), B.RefreshTime, 20)
+ORDER BY
+	convert(varchar(10), B.RefreshTime, 20)
+
+DECLARE @STime DATETIME = '2023-07-13 00:00:00.000';
+
+DECLARE @ETime DATETIME = '2023-07-13 23:59:59.999';
+
+SELECT
+	t3.UserID,
+	t3.FullName as UserName,
+	CAST(SUBSTRING(CAST(t3.Region as varchar), 1, 6) as int) as RegionID,
+	SUM(t1.JobCount) as JobCount,
+	SUM(t1.ReceivedResumes) as ReceivedResumes,
+	SUM(t1.ViewResumes) as ViewResumes,
+	SUM(t1.LoginCount) as LoginCount,
+	SUM(t1.RefreshJobs) as RefreshJobs,
+	SUM(t1.JobInvite) as JobInvite,
+	SUM(t1.ChatCount) as ChatCount,
+	SUM(t1.ChatAllCount) as ChatAllCount,
+	SUM(t1.ReceivedResumesHasRead) as ReceivedResumesHasRead,
+	SUM(t1.InterviewCount) as InterviewCount,
+	SUM(t1.FeedbackSpeed) as FeedbackSpeed,
+	@STime as LastStatTime
+FROM
+	(
+		(
+			SELECT
+				EntSn,
+				COUNT(*) AS JobCount,
+				0 AS ReceivedResumes,
+				0 AS ViewResumes,
+				0 AS LoginCount,
+				0 AS RefreshJobs,
+				0 AS JobInvite,
+				0 AS ChatCount,
+				0 AS ChatAllCount,
+				0 AS ReceivedResumesHasRead,
+				0 AS InterviewCount,
+				0 AS FeedbackSpeed
+			FROM
+				dbo.TB_BC_JobOffer
+			WHERE
+				AddTime BETWEEN @STime
+				AND @ETime
+			GROUP BY
+				EntSn
+		)
+		UNION
+		(
+			SELECT
+				EntSn,
+				0 AS JobCount,
+				COUNT(*) AS ReceivedResumes,
+				0 AS ViewResumes,
+				0 AS LoginCount,
+				0 AS RefreshJobs,
+				0 AS JobInvite,
+				0 AS ChatCount,
+				0 AS ChatAllCount,
+				0 AS ReceivedResumesHasRead,
+				0 AS InterviewCount,
+				0 AS FeedbackSpeed
+			FROM
+				dbo.TB_BC_JwApplyJob
+			WHERE
+				ApplyDate BETWEEN @STime
+				AND @ETime
+			GROUP BY
+				EntSn
+		)
+		UNION
+		(
+			SELECT
+				Ent_SN as EntSn,
+				0 AS JobCount,
+				0 AS ReceivedResumes,
+				COUNT(*) AS ViewResumes,
+				0 AS LoginCount,
+				0 AS RefreshJobs,
+				0 AS JobInvite,
+				0 AS ChatCount,
+				0 AS ChatAllCount,
+				0 AS ReceivedResumesHasRead,
+				0 AS InterviewCount,
+				0 AS FeedbackSpeed
+			FROM
+				dbo.TB_BC_ViewResume
+			WHERE
+				VDate BETWEEN @STime
+				AND @ETime
+			GROUP BY
+				Ent_SN
+		)
+		UNION
+		(
+			SELECT
+				Ent_SN as EntSn,
+				0 AS JobCount,
+				0 AS ReceivedResumes,
+				0 AS ViewResumes,
+				COUNT(*) AS LoginCount,
+				0 AS RefreshJobs,
+				0 AS JobInvite,
+				0 AS ChatCount,
+				0 AS ChatAllCount,
+				0 AS ReceivedResumesHasRead,
+				0 AS InterviewCount,
+				0 AS FeedbackSpeed
+			FROM
+				dbo.TB_BC_ComLoginLog
+			WHERE
+				Postdate BETWEEN @STime
+				AND @ETime
+				AND Source != 11
+				AND Source != 15
+			GROUP BY
+				Ent_SN
+		)
+		UNION
+		(
+			SELECT
+				EntSn,
+				0 AS JobCount,
+				0 AS ReceivedResumes,
+				0 AS ViewResumes,
+				0 AS LoginCount,
+				COUNT(*) AS RefreshJobs,
+				0 AS JobInvite,
+				0 AS ChatCount,
+				0 AS ChatAllCount,
+				0 AS ReceivedResumesHasRead,
+				0 AS InterviewCount,
+				0 AS FeedbackSpeed
+			FROM
+				dbo.TB_BC_JobRefreshLog
+			WHERE
+				RefreshTime BETWEEN @STime
+				AND @ETime
+			GROUP BY
+				EntSn
+		)
+		UNION
+		(
+			SELECT
+				Ent_SN as EntSn,
+				0 AS JobCount,
+				0 AS ReceivedResumes,
+				0 AS ViewResumes,
+				0 AS LoginCount,
+				0 AS RefreshJobs,
+				COUNT(*) AS JobInvite,
+				0 AS ChatCount,
+				0 AS ChatAllCount,
+				0 AS ReceivedResumesHasRead,
+				0 AS InterviewCount,
+				0 AS FeedbackSpeed
+			FROM
+				dbo.TB_BC_InvitePerson
+			WHERE
+				Send_Date BETWEEN @STime
+				AND @ETime
+			GROUP BY
+				Ent_SN
+		)
+		UNION
+		(
+			SELECT
+				EntSn,
+				0 AS JobCount,
+				0 AS ReceivedResumes,
+				0 AS ViewResumes,
+				0 AS LoginCount,
+				0 AS RefreshJobs,
+				0 AS JobInvite,
+				COUNT(*) AS ChatCount,
+				0 AS ChatAllCount,
+				0 AS ReceivedResumesHasRead,
+				0 AS InterviewCount,
+				0 AS FeedbackSpeed
+			FROM
+				dbo.TB_BC_IMLog
+			WHERE
+				CreateTime BETWEEN @STime
+				AND @ETime
+				AND FromEnt = 1
+			GROUP BY
+				EntSn
+		)
+		UNION
+		(
+			SELECT
+				EntSn,
+				0 AS JobCount,
+				0 AS ReceivedResumes,
+				0 AS ViewResumes,
+				0 AS LoginCount,
+				0 AS RefreshJobs,
+				0 AS JobInvite,
+				0 AS ChatCount,
+				COUNT(*) AS ChatAllCount,
+				0 AS ReceivedResumesHasRead,
+				0 AS InterviewCount,
+				0 AS FeedbackSpeed
+			FROM
+				dbo.TB_BC_IMLog
+			WHERE
+				CreateTime BETWEEN @STime
+				AND @ETime
+			GROUP BY
+				EntSn
+		)
+		UNION
+		(
+			SELECT
+				EntSn,
+				0 AS JobCount,
+				0 AS ReceivedResumes,
+				0 AS ViewResumes,
+				0 AS LoginCount,
+				0 AS RefreshJobs,
+				0 AS JobInvite,
+				0 AS ChatCount,
+				0 AS ChatAllCount,
+				COUNT(*) AS ReceivedResumesHasRead,
+				0 AS InterviewCount,
+				0 AS FeedbackSpeed
+			FROM
+				dbo.TB_BC_JwApplyJob
+			WHERE
+				ApplyDate BETWEEN @STime
+				AND @ETime
+				AND IsRead = 1
+			GROUP BY
+				EntSn
+		)
+		UNION
+		(
+			SELECT
+				Ent_SN as EntSn,
+				0 AS JobCount,
+				0 AS ReceivedResumes,
+				0 AS ViewResumes,
+				0 AS LoginCount,
+				0 AS RefreshJobs,
+				0 AS JobInvite,
+				0 AS ChatCount,
+				0 AS ChatAllCount,
+				0 AS ReceivedResumesHasRead,
+				COUNT(*) AS InterviewCount,
+				0 AS FeedbackSpeed
+			FROM
+				dbo.TB_BC_InterviewRec
+			WHERE
+				PostDate BETWEEN @STime
+				AND @ETime
+			GROUP BY
+				Ent_SN
+		)
+		UNION
+		(
+			SELECT
+				EntSn,
+				0 AS JobCount,
+				0 AS ReceivedResumes,
+				0 AS ViewResumes,
+				0 AS LoginCount,
+				0 AS RefreshJobs,
+				0 AS JobInvite,
+				0 AS ChatCount,
+				0 AS ChatAllCount,
+				0 AS ReceivedResumesHasRead,
+				0 AS InterviewCount,
+				SUM(DATEDIFF(d, ApplyDate, EntDelTime)) / count(*) as FeedbackSpeed
+			FROM
+				dbo.TB_BC_JwApplyJob
+			WHERE
+				EntDelTime BETWEEN @STime
+				AND @ETime
+				AND EntDelTime IS NOT NULL
+				AND IsRead = 1
+				AND Entdel = 0
+			GROUP BY
+				EntSn
+		)
+	) as t1
+	INNER JOIN TB_BC_YnzpId as t2 ON t1.EntSn = t2.BczpId
+	LEFT JOIN ViewCompanyMark as t3 ON t2.YnzpId = t3.UserID
+GROUP BY
+	t3.UserID,
+	t3.FullName,
+	t3.Region
+
+SELECT
+	CAST(A.BczpId as varchar) + '_' + convert(varchar(10), B.PostDate, 20) as Id,
+	A.YnzpId as UserID,
+	A.BczpId AS EntSn,
+	COUNT(*) as LoginCount,
+	convert(varchar(10), B.PostDate, 20) as LoginDate
+FROM
+	dbo.TB_BC_YnzpId AS A
+	INNER JOIN dbo.TB_BC_ComLoginLog AS B ON B.Ent_Sn = A.BczpId
+GROUP BY
+	A.YnzpId,
+	A.BczpId,
+	convert(varchar(10), B.PostDate, 20)
+ORDER BY
+	convert(varchar(10), B.PostDate, 20)
+
+SELECT
+	CAST(A.BczpId as varchar) + '_' + convert(varchar(10), B.CreateTime, 20) as Id,
+	A.YnzpId as UserID,
+	A.BczpId AS EntSn,
+	COUNT(*) as IMCounts,
+	convert(varchar(10), B.CreateTime, 20) as IMDate
+FROM
+	dbo.TB_BC_YnzpId AS A
+	INNER JOIN dbo.TB_BC_IMLog AS B ON B.EntSn = A.BczpId
+WHERE
+	FromEnt = 1
+GROUP BY
+	A.YnzpId,
+	A.BczpId,
+	convert(varchar(10), B.CreateTime, 20)
+ORDER BY
+	convert(varchar(10), B.CreateTime, 20)
+
+SELECT
+	CAST(A.BczpId as varchar) + '_' + convert(varchar(10), B.Send_Date, 20) as Id,
+	A.YnzpId as UserID,
+	A.BczpId AS EntSn,
+	COUNT(*) as InviteCounts,
+	convert(varchar(10), B.Send_Date, 20) as InvitePostDate
+FROM
+	dbo.TB_BC_YnzpId AS A
+	INNER JOIN dbo.TB_BC_InvitePerson AS B ON B.Ent_Sn = A.BczpId
+GROUP BY
+	A.YnzpId,
+	A.BczpId,
+	convert(varchar(10), B.Send_Date, 20)
+ORDER BY
+	convert(varchar(10), B.Send_Date, 20)
+
+--author:huadz
+DECLARE @deadline INT = 100
+SELECT
+  A.UserID As '公司Id',
+  A.CompanyName AS '公司名称',
+  C.EmpName AS '员工姓名',
+  D.DeptName AS '所属组',
+  B.ServiceEndDate AS 'VIP到期时间',
+  CASE
+    B.VipClass
+    WHEN 23 THEN '实惠型'
+    WHEN 101 THEN '金卡'
+    WHEN 102 THEN '银卡'
+    WHEN 103 THEN '普通年卡'
+    WHEN 201 THEN '7天试用版'
+    WHEN 202 THEN '15天试用版'
+    WHEN 205 THEN 'HR尝鲜版'
+    WHEN 206 THEN 'HR入门版'
+    WHEN 207 THEN 'HR标准版'
+    WHEN 208 THEN 'HR专业版'
+    WHEN 209 THEN 'HR精英版'
+    WHEN 210 THEN 'HR大师版'
+    WHEN 211 THEN 'HR名企尊享版'
+    WHEN 218 THEN '(劳务)普通版'
+    WHEN 219 THEN '(劳务)升级版'
+    WHEN 226 THEN '扶贫套餐'
+    ELSE '无'
+  END AS 'VIP类型'
+FROM
+  [dbo].[TB_Company] A
+  LEFT JOIN [dbo].[TB_CurrentComRight] B ON A.UserID = B.UserID
+  LEFT JOIN TB_Emp C ON A.EmpNo = C.EmpNo
+  LEFT JOIN TB_EmpGroup D ON C.GroupID = D.Id
+WHERE
+  ServiceEndDate BETWEEN GETDATE()
+  AND DATEADD(DAY, @deadline, GETDATE())
+ORDER BY
+  B.ServiceEndDate
+
+-- 假设你已经有了一个查询结果的表，命名为table1
+WITH a AS (
+	SELECT
+		TB_BC_EntInfo.Ent_SN AS Ent_SN,
+		SUBSTRING (
+			REPLACE(
+				REPLACE(TB_BC_EntInfo.Ent_Industry, '[^0-9]', ''),
+				',',
+				''
+			),
+			6,
+			5
+		) AS Industry
+	FROM
+		dbo.TB_BC_EntInfo
+	WHERE
+		SUBSTRING (
+			REPLACE(
+				REPLACE(TB_BC_EntInfo.Ent_Industry, '[^0-9]', ''),
+				',',
+				''
+			),
+			6,
+			5
+		) <> ''
+	UNION
+	SELECT
+		TB_BC_EntInfo.Ent_SN AS Ent_SN,
+		SUBSTRING (
+			REPLACE(
+				REPLACE(TB_BC_EntInfo.Ent_Industry, '[^0-9]', ''),
+				',',
+				''
+			),
+			1,
+			5
+		) AS Industry
+	FROM
+		dbo.TB_BC_EntInfo
+	WHERE
+		SUBSTRING (
+			REPLACE(
+				REPLACE(TB_BC_EntInfo.Ent_Industry, '[^0-9]', ''),
+				',',
+				''
+			),
+			1,
+			5
+		) <> ''
+) -- 然后，你可以将已有的结果与另一张表进行join操作
+SELECT
+	a.Ent_SN,
+	a.Industry,
+	TB_BC_Industry.name
+FROM
+	a
+	INNER JOIN TB_BC_Industry ON a.Industry = TB_BC_Industry.bcid
+ORDER BY
+	a.Industry DESC
+
+DECLARE @place INT = 331002;
+SELECT
+ROW_NUMBER() OVER (ORDER BY b.Ent_Name) AS RowNumber,
+b.Ent_Name as 单位名称,
+b.Ent_Reg_Num as 统一社会信用码,
+a.JobName as [招聘岗位],
+CASE CAST(a.Job_People_Count AS VARCHAR(255))
+	WHEN '0' THEN '不限'
+	ELSE CAST(a.Job_People_Count AS VARCHAR(255))
+END as [招聘人数],
+'' as 男性,
+'' as 女性,
+TLearn.IName as 最低学历,
+SalaryLow as 月薪下限,
+SalaryHigh as 月薪上限,
+JobContactAddress as 工作地址,
+JobKind as 工作性质,
+JobProvideHouse as 是否提供住宿,
+JobRequirement as 职位描述
+FROM
+	dbo.TB_BC_JobOffer as a
+	LEFT JOIN
+	dbo.TB_BC_EntInfo as b
+	ON 
+		a.EntSn = b.Ent_SN
+	LEFT JOIN (SELECT ICode,IName FROM TB_BC_List_Down WHERE lx =15) as TLearn
+	on a.JobLearnLimited = TLearn.ICode
+WHERE
+	1 = 1 
+	AND a.JobIsActive = 1 
+	AND a.IsChecked = 1 
+	And a.JobWorkplaceCode = @palce
+  and Ent_Name is not null
+	
+	
+
+
+
+SELECT
+	* 
+FROM
+	ViewCompanyMark 
+WHERE
+	VipType = 2 
+	AND UserID IN (
+	SELECT
+		YnzpId 
+	FROM
+		TB_BC_YnzpId 
+	WHERE
+		BczpId IN (
+		SELECT
+			Ent_Sn 
+		FROM
+			TB_BC_EntInfo 
+		WHERE
+			sqrt(
+				(
+					(
+						( 102.782435-BMap_lng ) * PI( ) * 12656 * cos( ( ( 24.945241+BMap_lat ) / 2 ) * PI( ) / 180 ) / 180 
+						) * (
+						( 102.782435-BMap_lng ) * PI( ) * 12656 * cos( ( ( 24.945241+BMap_lat ) / 2 ) * PI( ) / 180 ) / 180 
+					) 
+					) + (
+					( ( 24.945241-BMap_lat ) * PI( ) * 12656 / 180 ) * ( ( 24.945241-BMap_lat ) * PI( ) * 12656 / 180 ) 
+				) 
+			) < 2 
+			AND Isdel = 0 
+		) 
+	)
+
+DECLARE @place VARCHAR(10) = '3313'
+DECLARE @days INT = -90
+SELECT
+		DISTINCT a.Jw_SN AS id,
+		a.Jw_Name AS 姓名, 
+		a.Jw_Contact_Email AS email
+	FROM
+		dbo.TB_BC_JwInfo AS a
+		INNER JOIN dbo.TB_BC_Resume AS b ON a.Jw_SN = b.Jw_SN 
+	WHERE
+		1 = 1 
+
+		And
+		(
+			a.Res_Hukou LIKE @place 
+			OR a.Res_Livin LIKE @place
+			OR b.Res_Workcity1 LIKE @place
+			OR b.Res_Workcity2 LIKE @place
+			OR b.Res_Workcity3 LIKE @place
+		)
+		AND a.Jw_Contact_Email IS NOT NULL 
+		AND a.Jw_Contact_Email != '' 
+		AND DATEADD( DAY, @days, GETDATE( ) ) < a.Jw_Latest_Login 
+
+DECLARE @STime DATETIME = '2021-04-25 00:00:00.000';
+
+DECLARE @ETime DATETIME = '2022-04-25 23:59:59.999';
+
+DECLARE @userid int = 674414;
+
+DECLARE @bcuserid int = 2815219;
+
+SELECT
+	a.YearMonth as YearMonth,
+	SUM(a.ReceivedMothCount) AS ReceivedMothCount,
+	SUM(a.ReceivedHasReadMothCount) AS ReceivedHasReadMothCount,
+	SUM(a.LoginMonthCount) AS LoginMonthCount,
+	SUM(a.JwViewMonthCount) As JwViewMonthCount
+FROM
+	(
+		SELECT
+			CONCAT(
+				YEAR(LastStatTime),
+				'-',
+				RIGHT(
+					'00' + CAST(MONTH(LastStatTime) AS VARCHAR(2)),
+					2
+				)
+			) AS YearMonth,
+			SUM(ReceivedResumes) AS ReceivedMothCount,
+			SUM(ReceivedResumesHasRead) AS ReceivedHasReadMothCount,
+			SUM(LoginCount) AS LoginMonthCount,
+			0 As JwViewMonthCount
+		FROM
+			TB_DO_ComDailyData
+		WHERE
+			LastStatTime >= @stime
+			AND LastStatTime <= @etime
+			and UserID = @userid
+		GROUP BY
+			CONCAT(
+				YEAR(LastStatTime),
+				'-',
+				RIGHT(
+					'00' + CAST(MONTH(LastStatTime) AS VARCHAR(2)),
+					2
+				)
+			)
+		UNION
+		SELECT
+			CONCAT(
+				YEAR(FetchTime),
+				'-',
+				RIGHT('00' + CAST(MONTH(FetchTime) AS VARCHAR(2)), 2)
+			) AS YearMonth,
+			0 AS ReceivedMothCount,
+			0 AS ReceivedHasReadMothCount,
+			0 AS LoginMonthCount,
+			SUM(TodayReadCount) AS JwViewMonthCount
+		FROM
+			TB_BC_JobReadLog
+		WHERE
+			FetchTime >= @stime
+			AND FetchTime <= @etime
+			and EntSn = @bcuserid
+			AND CurrentDate <> '2022-05-25'
+		GROUP BY
+			CONCAT(
+				YEAR(FetchTime),
+				'-',
+				RIGHT('00' + CAST(MONTH(FetchTime) AS VARCHAR(2)), 2)
+			)
+	) as a
+GROUP BY
+	a.YearMonth
+ORDER BY
+	YearMonth
+
+--查询某个企业某年度各岗位的查看次数和投递次数，注意查看次数取的是求职者查看岗位的时间，投递次数取的是求职者投递岗位的时间。
+DECLARE @ent_sn INT DECLARE @year_no INT
+SET
+	@ent_sn = 2846529
+SET
+	@year_no = 2023
+SELECT
+	d.jobsn,
+	d.jobname,
+	c.发布次数,
+	c.招聘人数,
+	d.查看次数,
+	d.投递次数
+FROM
+	(
+		SELECT
+			TB_BC_JobOffer.JobSn AS jobsn,
+			TB_BC_JobOffer.JobName AS jobname,
+			COUNT (TB_BC_JobOffer.JobSn) AS 发布次数,
+			sum(TB_BC_JobOffer.Job_People_Count) as 招聘人数
+		FROM
+			dbo.TB_BC_JobOffer
+		WHERE
+			TB_BC_JobOffer.EntSn = @ent_sn
+			AND YEAR (TB_BC_JobOffer.AddTime) = @year_no
+			AND TB_BC_JobOffer.IsChecked = 1
+			AND TB_BC_JobOffer.IsDel = 0
+		GROUP BY
+			TB_BC_JobOffer.JobSn,
+			TB_BC_JobOffer.JobName
+	) AS c FULL
+	OUTER JOIN (
+		SELECT
+			a.jobsn,
+			a.jobname,
+			a.查看次数,
+			b.投递次数
+		FROM
+			(
+				SELECT
+					TB_BC_JwViewJob.Job_SN AS jobsn,
+					TB_BC_JwViewJob.Job_Name AS jobname,
+					COUNT (TB_BC_JwViewJob.Id) AS [查看次数]
+				FROM
+					dbo.TB_BC_JwViewJob
+				WHERE
+					TB_BC_JwViewJob.Ent_SN = @ent_sn
+					AND YEAR (VDate) = @year_no
+				GROUP BY
+					TB_BC_JwViewJob.Job_SN,
+					TB_BC_JwViewJob.Job_Name
+			) AS a FULL
+			OUTER JOIN (
+				SELECT
+					TB_BC_JwApplyJob.JobSn AS jobsn,
+					TB_BC_JwApplyJob.JobName AS jobname,
+					COUNT (TB_BC_JwApplyJob.id) AS 投递次数
+				FROM
+					dbo.TB_BC_JwApplyJob
+				WHERE
+					TB_BC_JwApplyJob.EntSn = @ent_sn
+					AND YEAR (TB_BC_JwApplyJob.ApplyDate) = @year_no
+				GROUP BY
+					TB_BC_JwApplyJob.JobSn,
+					TB_BC_JwApplyJob.JobName
+			) AS b ON a.jobsn = b.jobsn
+	) AS d ON c.jobsn = d.jobsn
+ORDER BY
+	d.[投递次数] DESC
+
+DECLARE @comID INTEGER DECLARE @startTime DATE
+SET
+	@comID = 3020137
+SET
+	@startTime = '2019-05-01'
+SELECT
+	TB_BC_JobOffer.JobSn,
+	TB_BC_JobOffer.JobName,
+	TB_BC_EntInfo.Ent_Name,
+	TB_BC_JobOffer.AddTime,
+	TB_BC_JobOffer.JobExpire,
+	TB_BC_JobOffer.Job_Publish_Date,
+	SUM (TB_BC_JobOffer.Job_People_Count) AS 需求人数,
+	COUNT (TB_BC_JwApplyJob.Id) AS 申请数
+FROM
+	dbo.TB_BC_EntInfo
+	INNER JOIN dbo.TB_BC_JwApplyJob ON TB_BC_EntInfo.Ent_SN = TB_BC_JwApplyJob.EntSn
+	INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_JwApplyJob.JobSn = TB_BC_JobOffer.JobSn
+WHERE
+	TB_BC_EntInfo.Ent_SN = @comID
+	AND TB_BC_JobOffer.AddTime >= @startTime
+GROUP BY
+	TB_BC_JobOffer.JobSn,
+	TB_BC_JobOffer.JobName,
+	TB_BC_EntInfo.Ent_Name,
+	dbo.TB_BC_JobOffer.AddTime,
+	TB_BC_JobOffer.JobExpire,
+	TB_BC_JobOffer.Job_Publish_Date
+
+DECLARE @time DATE
+SET
+	@time = '2020-11-01 00:00:00'
+SELECT
+	Count(*) AS "更新数"
+FROM
+	dbo.TB_Person
+WHERE
+	(
+		TB_Person.WantJobPlace LIKE '%5305%'
+		OR TB_Person.City LIKE '%5305%'
+	)
+	AND TB_Person.UpdateTime >= @time
+SELECT
+	Count(*) AS "注册数"
+FROM
+	dbo.TB_Person
+WHERE
+	(
+		TB_Person.WantJobPlace LIKE '%5305%'
+		OR TB_Person.City LIKE '%5305%'
+	)
+	AND TB_Person.CreateTime >= @time
+SELECT
+	COUNT(*) AS "个人应聘数"
+FROM
+	[dbo].[TB_JobApply]
+WHERE
+	AddTime >= @time
+	AND UserID IN (
+		SELECT
+			UserID
+		FROM
+			dbo.TB_Person
+		WHERE
+			(
+				TB_Person.WantJobPlace LIKE '%5305%'
+				OR TB_Person.City LIKE '%5305%'
+			)
+	)
+SELECT
+	COUNT(*) AS "收藏职位数"
+FROM
+	[dbo].[TB_PersonFavorite]
+WHERE
+	AddTime >= @time
+	AND UserID IN (
+		SELECT
+			UserID
+		FROM
+			dbo.TB_Person
+		WHERE
+			(
+				TB_Person.WantJobPlace LIKE '%5305%'
+				OR TB_Person.City LIKE '%5305%'
+			)
+	)
+
+DECLARE @city INT = 3310
+SELECT
+	ROW_NUMBER() OVER (
+		ORDER BY
+			b.Ent_Name
+	) AS RowNumber,
+	b.Ent_Name as 单位名称,
+	b.Ent_Reg_Num as 统一社会信用码,
+	b.Ent_Industry as 所属行业,
+	b.Ent_Property as 单位类型,
+	b.Ent_Fund as 经济类型,
+	(
+		SELECT
+			top(1) YnName
+		FROM
+			[dbo].[TB_BC_YnCity]
+		WHERE
+			CityCode = b.CityCode
+	) as 所在区域,
+	b.Ent_Contact_Address as 详细地址,
+	b.Ent_Contact_People as 联系人1,
+	b.Ent_Contact_Mobile as 联系电话1,
+	'' as 身份证,
+	b.Ent_Contact_People2 as 联系人2,
+	b.Ent_Contact_Mobile2 as 联系电话2
+FROM
+	dbo.TB_BC_JobOffer as a
+	LEFT JOIN dbo.TB_BC_EntInfo as b ON a.EntSn = b.Ent_SN
+WHERE
+	1 = 1
+	AND a.JobIsActive = 1
+	AND a.IsChecked = 1
+	And left(a.JobWorkplaceCode, 4) = @city
+	and Ent_Name is not null
+GROUP BY
+	b.Ent_Name,
+	b.Ent_Reg_Num,
+	b.Ent_Industry,
+	b.Ent_Property,
+	b.Ent_Fund,
+	b.CityCode,
+	b.Ent_Contact_Address,
+	b.Ent_Contact_People,
+	b.Ent_Contact_Mobile,
+	b.Ent_Contact_People2,
+	b.Ent_Contact_Mobile2
+
+DECLARE @ city INT = 5301
+SELECT
+    top(4000) FullName as 企业名称,
+    Contact as 联系人,
+    ContactTel as 联系方式,
+    case
+        VipType
+        when 2 then 'VIP企业'
+        when 3 then 'VIP企业（已过期）'
+        when 4 then '试用企业'
+        when 5 then '试用企业（已过期）'
+        else '非会员'
+    end as 会员类型
+FROM
+    [dbo].[ViewCompanyMark]
+WHERE
+    EmpNo = 0
+    And PublicPoolId = -1
+    and LEFT(ResPoolId, 4) = @city
+ORDER BY
+    RecTime
+
+SELECT
+	Jw_Name AS 姓名,
+	Jw_Contact_Mobile 联系方式,
+	Jw_Contact_Email 邮件,
+	CASE
+		Res_Sex
+		WHEN 1 THEN '男'
+		WHEN 2 THEN '女'
+		ELSE '未知'
+	END AS 性别,
+	DATEDIFF(yy, Res_birthday, GETDATE()) AS 年龄,
+	-- 户口所在地
+	Res_Hukou_Cn 籍贯,
+	Res_Livin_Cn 居住地,
+	Res_Major 专业,
+	-- CASE
+	-- 		Res_Learn 
+	-- 		WHEN 10 THEN
+	-- 		'小学' 
+	-- 		WHEN 20 THEN
+	-- 		'初中' 
+	-- 		WHEN 30 THEN
+	-- 		'高中' 
+	-- 		WHEN 40 THEN
+	-- 		'中专' 
+	-- 		WHEN 50 THEN
+	-- 		'大专' 
+	-- 		WHEN 60 THEN
+	-- 		'本科' 
+	-- 		WHEN 70 THEN
+	-- 		'硕士' 
+	-- 		WHEN 80 THEN
+	-- 		'博士' ELSE '未知' 
+	-- 	END AS 学历 ,
+	-- 	CONCAT ( Res_Workcity_Cn1, '/', Res_Workcity_Cn2, '/', Res_Workcity_Cn3 ) 求职区域,
+	CONCAT (
+		Res_JobCategory_Cn1,
+		'/',
+		Res_JobCategory_Cn2,
+		'/',
+		Res_JobCategory_Cn3
+	) 求职类别,
+	Res_Self_intro AS 自我介绍,
+	Res_Job_Want AS 求职意向,
+	Jw_Latest_Login as 最后登录时间 --	datediff( DAY, a.Jw_Latest_Login, GETDATE() ) AS 登录间隔
+FROM
+	dbo.TB_BC_JwInfo AS a
+	LEFT JOIN dbo.TB_BC_Resume AS b ON a.Jw_SN = b.Jw_SN
+WHERE
+	1 = 1 -- 	and Res_Sex = 2
+	--	and Res_Learn >= 40
+	--	And b.Res_Modify_Date >= '2023-01-01 00:00:00' 
+	--  And a.Jw_Reg_Date >= '2022-01-01 00:00:00' AND a.Jw_Reg_Date < '2023-01-01 00:00:00'
+	--  AND ( b.Res_Workcity1 LIKE '3322%' OR b.Res_Workcity2 LIKE '3322%' OR b.Res_Workcity3 LIKE '3322%' ) 
+	--AND datediff( DAY, a.Jw_Latest_Login, GETDATE()) <= 30 
+	--and DATEDIFF(YEAR,Res_birthday,GETDATE()) <= 45 and Res_birthday is not null  AND Res_birthday <> '1900-01-01 00:00:00.000'
+	and (
+		--   res_jobcategory1 = 108103000 or 
+		-- 	res_jobcategory2 = 108103000 or 
+		-- 	res_jobcategory3 = 108103000 or
+		-- 	res_jobcategory1 in (select categoryid from [dbo].[tb_bc_jobcategory] where SubParentId  = 108103000) or
+		-- 	res_jobcategory2 in (select categoryid from [dbo].[tb_bc_jobcategory] where SubParentId  = 108103000) or
+		-- 	res_jobcategory3 in (select categoryid from [dbo].[tb_bc_jobcategory] where SubParentId  = 108103000)
+		-- 	OR 
+		(
+			(Res_Self_intro LIKE '%建筑%')
+			OR (Res_Self_intro LIKE '%施工%') -- 		OR ( Res_Self_intro LIKE '%网约车%' ) 
+			-- 		OR ( Res_Self_intro LIKE '%曹操专车%' ) 
+			-- 		OR ( Res_Self_intro LIKE '%曹操出行%' ) 
+			-- 		OR ( Res_Self_intro LIKE '%滴滴司机%' ) 
+			-- 		OR ( Res_Self_intro LIKE '%专车司机%' ) 
+			-- 		OR ( Res_Self_intro LIKE '%开车%' ) 
+			-- 		OR ( Res_Self_intro LIKE '%配送员%' ) 
+			-- 		OR ( Res_Self_intro LIKE '%滴滴%' ) 
+			OR (Res_Job_Want LIKE '%建筑%')
+			OR (Res_Job_Want LIKE '%施工%') -- 		OR ( Res_Job_Want LIKE '%驾驶员%' ) 
+			-- 		OR ( Res_Job_Want LIKE '%网约车%' ) 
+			-- 		OR ( Res_Job_Want LIKE '%曹操专车%' ) 
+			-- 		OR ( Res_Job_Want LIKE '%曹操出行%' ) 
+			-- 		OR ( Res_Job_Want LIKE '%滴滴司机%' ) 
+			-- 		OR ( Res_Job_Want LIKE '%专车司机%' ) 
+			-- 		OR ( Res_Job_Want LIKE '%开车%' ) 
+			-- 		OR ( Res_Job_Want LIKE '%配送员%' ) 
+			-- 		OR ( Res_Job_Want LIKE '%滴滴%' ) 
+			OR (Res_JobCategory1 LIKE '%建筑%')
+			OR (Res_JobCategory1 LIKE '%施工%') -- 		OR ( Res_JobCategory1 LIKE '%驾驶员%' ) 
+			-- 		OR ( Res_JobCategory1 LIKE '%网约车%' ) 
+			-- 		OR ( Res_JobCategory1 LIKE '%曹操专车%' ) 
+			-- 		OR ( Res_JobCategory1 LIKE '%曹操出行%' ) 
+			-- 		OR ( Res_JobCategory1 LIKE '%滴滴司机%' ) 
+			-- 		OR ( Res_JobCategory1 LIKE '%专车司机%' ) 
+			-- 		OR ( Res_JobCategory1 LIKE '%开车%' ) 
+			-- 		OR ( Res_JobCategory1 LIKE '%配送员%' ) 
+			-- 		OR ( Res_JobCategory1 LIKE '%滴滴%' )
+			OR (Res_JobCategory2 LIKE '%建筑%')
+			OR (Res_JobCategory2 LIKE '%施工%') -- 		OR ( Res_JobCategory2 LIKE '%驾驶员%' ) 
+			-- 		OR ( Res_JobCategory2 LIKE '%网约车%' ) 
+			-- 		OR ( Res_JobCategory2 LIKE '%曹操专车%' ) 
+			-- 		OR ( Res_JobCategory2 LIKE '%曹操出行%' ) 
+			-- 		OR ( Res_JobCategory2 LIKE '%滴滴司机%' ) 
+			-- 		OR ( Res_JobCategory2 LIKE '%专车司机%' ) 
+			-- 		OR ( Res_JobCategory2 LIKE '%开车%' ) 
+			-- 		OR ( Res_JobCategory2 LIKE '%配送员%' ) 
+			-- 		OR ( Res_JobCategory2 LIKE '%滴滴%' )
+			OR (Res_JobCategory3 LIKE '%建筑%')
+			OR (Res_JobCategory3 LIKE '%施工%') -- 		OR ( Res_JobCategory3 LIKE '%驾驶员%' ) 
+			-- 		OR ( Res_JobCategory3 LIKE '%网约车%' ) 
+			-- 		OR ( Res_JobCategory3 LIKE '%曹操专车%' ) 
+			-- 		OR ( Res_JobCategory3 LIKE '%曹操出行%' ) 
+			-- 		OR ( Res_JobCategory3 LIKE '%滴滴司机%' ) 
+			-- 		OR ( Res_JobCategory3 LIKE '%专车司机%' ) 
+			-- 		OR ( Res_JobCategory3 LIKE '%开车%' ) 
+			-- 		OR ( Res_JobCategory3 LIKE '%配送员%' ) 
+			-- 		OR ( Res_JobCategory3 LIKE '%滴滴%' )
+			-- 		OR ( Res_JobCategory3 LIKE '%物资岗%' )
+		)
+	) -- 	AND Jw_Contact_Mobile != '' 
+	-- 	AND Jw_Contact_Mobile IS NOT NULL
+ORDER BY
+	Jw_Latest_Login desc
+
+SELECT
+	TB_BC_JwInfo.Jw_SN,
+	TB_BC_JwInfo.Jw_Name,
+	TB_BC_Resume.Res_Workcity1
+FROM
+	TB_BC_JwInfo
+	LEFT JOIN TB_BC_Resume ON TB_BC_JwInfo.Jw_SN = TB_BC_Resume.Jw_SN
+WHERE
+	TB_BC_Resume.Res_SN IN (
+		SELECT
+			TB_BC_JwApplyJob.ResSn
+		FROM
+			dbo.TB_BC_JobOffer
+			INNER JOIN dbo.TB_BC_JwApplyJob ON TB_BC_JobOffer.JobSn = TB_BC_JwApplyJob.JobSn
+			INNER JOIN dbo.TB_BC_JobCategory ON TB_BC_JobOffer.JobCategory = TB_BC_JobCategory.CategoryId
+		WHERE
+			TB_BC_JobCategory.CategoryId >= N'109102000'
+			and TB_BC_JobCategory.CategoryId <= N'109102139'
+	)
+
+SELECT
+	TB_BC_EntInfo.*
+FROM
+	dbo.TB_BC_EntInfo
+	INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+	INNER JOIN dbo.TB_BC_JobCategory ON TB_BC_JobOffer.JobCategory = TB_BC_JobCategory.CategoryId
+WHERE
+	TB_BC_JobCategory.CategoryId >= N'109102000'
+	AND (TB_BC_JobCategory.CategoryId <= N'109102139')
+
+DECLARE @STime DATETIME = '2023-01-01 00:00:00.000';
+DECLARE @ETime DATETIME = '2023-01-01 23:59:59.999';
+
+SELECT
+ t1.JobSn as JobID,
+ t3.YnzpId as UserID,
+ t2.JobName,
+ t2.AddTime as PublishTime,
+ t2.SalaryHigh as HighSalary,
+ t2.SalaryLow as LowSalary,
+ t2.JobIsActive,
+ t2.IsChecked,t2.IsDel,
+ Sum(t1.ViewCount) as ViewCount,
+ Sum(t1.ReceivedCount) as ReceivedCount,
+ Sum(t1.ViewResume) as ViewResume,
+ Sum(t1.RefreshCount) as RefreshCount,
+ Sum(t1.ReceivedHasRead) as ReceivedHasRead,
+ @STime as UpdateTime
+FROM
+(
+ (
+ 	SELECT 
+ 		JobSn,
+ 		Sum(TodayReadCount) as ViewCount,0 as ReceivedCount,0 as ViewResume,0 as RefreshCount,0 as ReceivedHasRead
+ 	FROM 
+ 		TB_BC_JobReadLog
+ 	WHERE
+ 		CurrentDate BETWEEN @STime AND @ETime and TodayReadCount > 0
+ 	GROUP BY JobSn
+ ) UNION
+ (
+ 	SELECT 
+ 		JobSn,
+ 		0 as ViewCount,0 as ReceivedCount,0 as ViewResume,0 as RefreshCount,count(*) as ReceivedHasRead
+ 	FROM 
+ 		TB_BC_JwApplyJob
+ 	WHERE
+ 		ApplyDate BETWEEN @STime AND @ETime and IsRead = 1
+ 	GROUP BY JobSn
+ )UNION
+ (
+ 	SELECT 
+ 		JobSn,
+ 		0 as ViewCount,count(*) as ReceivedCount,0 as ViewResume,0 as RefreshCount,0 as ReceivedHasRead
+ 	FROM 
+ 		TB_BC_JwApplyJob
+ 	WHERE
+ 		ApplyDate BETWEEN @STime AND @ETime
+ 	GROUP BY JobSn
+ ) UNION
+ (
+ 	SELECT 
+ 		Job_SN as JobSn,
+ 		0 as ViewCount,0 as ReceivedCount,count(*) as ViewResume,0 as RefreshCount,0 as ReceivedHasRead
+ 	FROM 
+ 		TB_BC_InvitePerson
+ 	WHERE
+ 		Send_Date BETWEEN @STime AND @ETime
+ 	GROUP BY Job_SN
+ )UNION
+ (
+ 	SELECT 
+ 		JobSn,
+ 		0 as ViewCount,0 as ReceivedCount,0 as ViewResume,count(*) as RefreshCount,0 as ReceivedHasRead
+ 	FROM 
+ 		TB_BC_JobRefreshLog
+ 	WHERE
+ 		RefreshTime BETWEEN @STime AND @ETime
+ 	GROUP BY JobSn
+ )
+) as t1
+LEFT JOIN TB_BC_JobOffer as t2 ON t1.JobSn = t2.JobSn
+INNER JOIN TB_BC_YnzpId as t3 ON t2.EntSn = t3.BczpId
+GROUP BY t1.JobSn,t3.YnzpId,t2.JobName,t2.AddTime,t2.SalaryHigh,t2.SalaryLow,t2.JobIsActive,t2.IsChecked,t2.IsDel
+
+SELECT
+	TB_BC_JwApplyJob.*
+FROM
+	dbo.TB_BC_JobOffer
+	INNER JOIN dbo.TB_BC_JwApplyJob ON TB_BC_JobOffer.JobSn = TB_BC_JwApplyJob.JobSn
+	INNER JOIN dbo.TB_BC_JobCategory ON TB_BC_JobOffer.JobCategory = TB_BC_JobCategory.CategoryId
+WHERE
+	TB_BC_JobCategory.CategoryId >= N'109102000'
+	AND (
+		TB_BC_JobCategory.CategoryId <= N'109102139'
+	)
+
+SELECT
+top 1
+	--count(*)
+	--Job_Medals
+-- 	TB_Company.FullName as 企业名称,
+-- 	JobName as 职位名称,
+-- 	Job_People_Count as 招聘人数
+*
+FROM
+	dbo.TB_Company
+	INNER JOIN
+	dbo.TB_BC_YnzpId
+	ON 
+		TB_Company.UserID = TB_BC_YnzpId.YnzpId
+	INNER JOIN
+	dbo.TB_BC_EntInfo
+	ON 
+		TB_BC_YnzpId.BczpId = TB_BC_EntInfo.Ent_SN
+	LEFT JOIN
+	dbo.TB_BC_JobOffer
+	ON 
+		TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn
+WHERE
+1 =1
+	AND TB_Company.IsVip = 1
+	and TB_BC_JobOffer.IsDel = 0
+	and TB_BC_JobOffer.IsChecked = 1
+	and TB_BC_JobOffer.JobIsActive = 1
+  and (
+		TB_BC_JobOffer.JobRequirement like '%军人%'
+		or TB_BC_JobOffer.JobRequirement like '%退伍军人%'
+		or TB_BC_JobOffer.JobRequirement like '%退伍%'
+		or TB_BC_JobOffer.JobRequirement like '%部队%'
+		or TB_BC_JobOffer.JobRequirement like '%退转%'
+		or TB_BC_JobOffer.JobRequirement like '%退转军人%'
+		or TB_BC_JobOffer.JobRequirement like '%当兵%'
+		or TB_BC_JobOffer.JobRequirement like '%当过兵%'
+	)
+--福利
+  -- and TB_BC_JobOffer.Job_Medals like '%12%'
+	-- and TB_BC_JobOffer.Job_Medals like '%4%'
+	-- and (TB_BC_JobOffer.Job_Medals not like '%14%' and TB_BC_JobOffer.Job_Medals not like '%24%')
+-- 企业限制
+--   and EntSn in (3067068,
+-- 2976440,
+-- 2995778,
+-- 3138132,
+-- 2908658,
+-- 2963329,
+-- 2809805,
+-- 2888278,
+-- 2958320,
+-- 2965936)	
+--薪资 
+  --and SalaryLow >= 6000
+	--GROUP BY EntSn
+	ORDER BY TB_Company.FullName
+
+DECLARE @UserID INT = 183620;
+-- WITH CTE AS (
+--   SELECT
+--     *,
+--     ROW_NUMBER() OVER (PARTITION BY UserID ORDER BY AddTime DESC) AS RowNum
+--   FROM ViewSaleInfo
+-- )
+-- 
+-- SELECT * FROM CTE WHERE RowNum = 1 and UserID = 183620
+SELECT
+  *
+FROM
+  (
+    SELECT
+      *,
+      ROW_NUMBER() OVER (
+        PARTITION BY UserID
+        ORDER BY
+          AddTime DESC
+      ) AS RowNum
+    FROM
+      ViewSaleInfo
+  ) AS Subquery
+WHERE
+  RowNum = 1
+  AND UserID = @UserID;
+
+SELECT
+	(
+		CASE
+			WHEN TB_BC_JwInfo.Res_Learn = 60 THEN '本科'
+			WHEN TB_BC_JwInfo.Res_Learn = 70 THEN '硕士'
+			WHEN TB_BC_JwInfo.Res_Learn = 80 THEN '博士'
+			WHEN TB_BC_JwInfo.Res_Learn = 90 THEN '博士后'
+			WHEN TB_BC_JwInfo.Res_Learn = 100 THEN '在读硕士'
+			ELSE NULL
+		END
+	) AS 学历,
+	COUNT (TB_BC_JwInfo.Jw_SN) AS 计数
+FROM
+	dbo.TB_BC_JwInfo
+WHERE
+	TB_BC_JwInfo.Res_Learn >= 60
+	AND TB_BC_JwInfo.Res_Learn <> 110
+	AND YEAR (TB_BC_JwInfo.Res_birthday) >= 1988
+	AND YEAR (TB_BC_JwInfo.Jw_Latest_Login) >= 2023
+	AND (
+		Res_Major LIKE N'%焊接技术与工程%'
+		OR Res_Major LIKE N'%焊接技术与自动化%'
+		OR Res_Major LIKE N'%机械工程%'
+		OR Res_Major LIKE N'%大数据技术与应用专业%'
+	)
+GROUP BY
+	(
+		CASE
+			WHEN TB_BC_JwInfo.Res_Learn = 60 THEN '本科'
+			WHEN TB_BC_JwInfo.Res_Learn = 70 THEN '硕士'
+			WHEN TB_BC_JwInfo.Res_Learn = 80 THEN '博士'
+			WHEN TB_BC_JwInfo.Res_Learn = 90 THEN '博士后'
+			WHEN TB_BC_JwInfo.Res_Learn = 100 THEN '在读硕士'
+			ELSE NULL
+		END
+	)
+
+SELECT
+	DISTINCT a.Jw_SN AS id,
+	a.Jw_Name AS 姓名,
+	a.Jw_Contact_Mobile AS 联系电话
+FROM
+	dbo.TB_BC_JwInfo AS a
+	INNER JOIN dbo.TB_BC_Resume AS b ON a.Jw_SN = b.Jw_SN
+WHERE
+	1 = 1 -- 区域
+	And (
+		a.Res_Hukou like '3312%'
+		or a.Res_Livin like '3312%'
+		or b.Res_Workcity1 like '3312%'
+		or b.Res_Workcity2 like '3312%'
+		or b.Res_Workcity3 like '3312%'
+	) -- 学历
+	-- 	AND a.Res_Learn >= 60 
+	AND a.Jw_Contact_Mobile IS NOT NULL
+	AND a.Jw_Contact_Mobile != ''
+	AND DATEADD (DAY, - 90, GETDATE ()) < a.Jw_Latest_Login -- 	And
+	-- 		(
+	-- 			b.Res_JobCategory1 in (100000000,100100000,100101000,100102000,100100100,100100107,100100108,100100116,100103115) or
+	-- 			b.Res_JobCategory2 in (100000000,100100000,100101000,100102000,100100100,100100107,100100108,100100116,100103115) or
+	-- 			b.Res_JobCategory3 in (100000000,100100000,100101000,100102000,100100100,100100107,100100108,100100116,100103115)	or
+	-- 			b.Res_Self_intro Like '%销售%'
+	-- 		)
+
+DECLARE @comID INTEGER
+DECLARE @startTime DATE
+set @comID = 1961054
+set @startTime = '2019-01-01'
+
+SELECT
+    CONVERT ( nvarchar ( 20 ), a.ReadTime, 120 ) as '阅读时间',
+	a.PUserID as '简历编号',
+	a.DisplayName as '姓名',
+	a.WantJobName as '求职意向',
+CASE
+		a.Sex 
+		WHEN 1 THEN
+		'男' 
+		WHEN 2 THEN
+		'女' ELSE '未知' 
+	END AS '性别',
+	datediff( yy, a.BirthDay, GETDATE( ) ) AS '年龄',
+	CONVERT ( nvarchar ( 10 ), a.BirthDay, 23 ) AS '生日',
+CASE
+		a.EduDegree 
+		WHEN 10 THEN
+		'小学' 
+		WHEN 20 THEN
+		'初中' 
+		WHEN 30 THEN
+		'高中' 
+		WHEN 40 THEN
+		'中专' 
+		WHEN 50 THEN
+		'大专' 
+		WHEN 60 THEN
+		'本科' 
+		WHEN 70 THEN
+		'硕士' 
+		WHEN 100 THEN
+		'在读硕士' 
+		WHEN 80 THEN
+		'博士' 
+		WHEN 90 THEN
+		'博士后' 
+		WHEN 110 THEN
+		'无学历' ELSE '未知' 
+	END AS '学历',
+b.SchoolName as  '毕业学校',
+b.Speciality as '专业',
+CASE
+		a.JobExp 
+		WHEN 1 THEN
+		'应届毕业生' 
+		WHEN 2 THEN
+		'1年' 
+		WHEN 3 THEN
+		'2年' 
+		WHEN 4 THEN
+		'3年' 
+		WHEN 5 THEN
+		'4年' 
+		WHEN 6 THEN
+		'5年' 
+		WHEN 7 THEN
+		'6年' 
+		WHEN 8 THEN
+		'7年' 
+		WHEN 9 THEN
+		'8年' 
+		WHEN 10 THEN
+		'10年以上' 
+		WHEN 20 THEN
+		'20年以上' 
+		WHEN 30 THEN
+		'30年以上' 
+		WHEN 50 THEN
+		'退休人员' ELSE '未知' 
+	END AS '工作经验'
+FROM
+	ViewReadedResume a
+	LEFT JOIN ViewPersonTopEdu b ON a.PUserID = b.UserID 
+WHERE
+	a.CUserID= @comID and ReadTime>=@startTime
+ORDER BY
+	ReadTime DESC
+
+DECLARE @comID INTEGER DECLARE @startTime DATE
+set
+	@comID = 1961054
+set
+	@startTime = '2019-01-01'
+SELECT
+	CONVERT (nvarchar (20), a.SendTime, 120) as '邀请时间',
+	a.JobName as '邀请职位',
+	a.PUserID as '简历编号',
+	a.DisplayName as '姓名',
+	(CASE
+		a.Sex
+		WHEN 1 THEN '男'
+		WHEN 2 THEN '女'
+		ELSE '未知'
+	END) AS '性别',
+	datediff(yy, a.BirthDay, GETDATE()) AS '年龄',
+	CONVERT (nvarchar (10), a.BirthDay, 23) AS '生日',
+	CASE
+		a.EduDegree
+		WHEN 10 THEN '小学'
+		WHEN 20 THEN '初中'
+		WHEN 30 THEN '高中'
+		WHEN 40 THEN '中专'
+		WHEN 50 THEN '大专'
+		WHEN 60 THEN '本科'
+		WHEN 70 THEN '硕士'
+		WHEN 100 THEN '在读硕士'
+		WHEN 80 THEN '博士'
+		WHEN 90 THEN '博士后'
+		WHEN 110 THEN '无学历'
+		ELSE '未知'
+	END AS '学历',
+	b.SchoolName as '毕业学校',
+	b.Speciality as '专业',
+	CASE
+		a.JobExp
+		WHEN 1 THEN '应届毕业生'
+		WHEN 2 THEN '1年'
+		WHEN 3 THEN '2年'
+		WHEN 4 THEN '3年'
+		WHEN 5 THEN '4年'
+		WHEN 6 THEN '5年'
+		WHEN 7 THEN '6年'
+		WHEN 8 THEN '7年'
+		WHEN 9 THEN '8年'
+		WHEN 10 THEN '10年以上'
+		WHEN 20 THEN '20年以上'
+		WHEN 30 THEN '30年以上'
+		WHEN 50 THEN '退休人员'
+		ELSE '未知'
+	END AS '工作经验'
+FROM
+	ViewPersonInvite a
+	LEFT JOIN ViewPersonTopEdu b ON a.PUserID = b.UserID
+WHERE
+	a.CUserID = @comID
+	and SendTime >= @startTime
+ORDER BY
+	SendTime DESC
+
+DECLARE @21stime date
+SET @21stime = '2021-01-01 00:00:00'
+DECLARE @21etime date
+SET @21etime = '2021-10-01 00:00:00'
+DECLARE @22stime date
+SET @22stime = '2022-01-01 00:00:00'
+DECLARE @22etime date
+SET @22etime = '2022-10-01 00:00:00'
+
+-----------------------------------------------------------------------------------------------------------
+-- 2022年前三季度招聘薪资
+SELECT T2.RName as 区域,Sum(Salary)/COUNT(T2.RName) as 平均薪资 FROM
+(
+ SELECT left(JobWorkplaceCode,4) as Code,(SalaryHigh+SalaryLow)/2 as Salary FROM [dbo].[TB_BC_JobOffer] WHERE AddTime >= @22stime and AddTime <= @22etime and IsDel = 0 and JobIsActive = 1 and IsChecked = 1
+ 
+) as T1
+INNER JOIN  
+(
+	SELECT left(name,2) as RName,left(class2,4) as Code FROM [dbo].[TB_BC_City] WHERE class1 = 123 and lx = 2
+) as T2
+On 
+T1.Code = T2.Code
+GROUP BY T2.code,T2.RName
+ORDER BY T2.code
+
+-- 2021
+SELECT T2.RName as 区域,Sum(Salary)/COUNT(T2.RName) as 平均薪资 FROM
+(
+ SELECT left(JobWorkplaceCode,4) as Code,(SalaryHigh+SalaryLow)/2 as Salary FROM [dbo].[TB_BC_JobOffer] WHERE AddTime >= @21stime and AddTime <= @21etime and IsDel = 0 and JobIsActive = 1 and IsChecked = 1
+ 
+) as T1
+INNER JOIN  
+(
+	SELECT left(name,2) as RName,left(class2,4) as Code FROM [dbo].[TB_BC_City] WHERE class1 = 123 and lx = 2
+) as T2
+On 
+T1.Code = T2.Code
+GROUP BY T2.code,T2.RName
+ORDER BY T2.code
+
+-- 按职位类别
+-----------------------------------------------------------------------------------------------------------
+-- 2021年前三季度招聘薪资
+SELECT T2.Name,T1.num FROM
+(
+	SELECT
+		id,Sum(Salary)/COUNT(1)as num
+	FROM
+	(
+		SELECT
+				b.ParentId as id,(SalaryHigh+SalaryLow)/2 as Salary
+		FROM
+			dbo.TB_BC_JobOffer as a
+			left JOIN
+			dbo.TB_BC_JobCategory as b
+			ON 
+				a.JobCategory = b.CategoryId
+		WHERE
+			a.AddTime >= @21stime
+		AND a.AddTime <= @21etime
+		and a.IsDel = 0 and a.JobIsActive = 1 and a.IsChecked = 1
+	) as t
+	GROUP BY id
+) as T1
+LEFT JOIN
+dbo.TB_BC_JobCategory T2
+on T1.id = T2.CategoryId
+ORDER BY T2.CategoryId
+
+-- 2022年前三季度招聘薪资
+SELECT T2.Name,T1.num FROM
+(
+	SELECT
+		id,Sum(Salary)/COUNT(1)as num
+	FROM
+	(
+		SELECT
+				b.ParentId as id,(SalaryHigh+SalaryLow)/2 as Salary
+		FROM
+			dbo.TB_BC_JobOffer as a
+			left JOIN
+			dbo.TB_BC_JobCategory as b
+			ON 
+				a.JobCategory = b.CategoryId
+		WHERE
+			a.AddTime >= @22stime
+		AND a.AddTime <= @22etime
+		and a.IsDel = 0 and a.JobIsActive = 1 and a.IsChecked = 1
+	) as t
+	GROUP BY id
+) as T1
+LEFT JOIN
+dbo.TB_BC_JobCategory T2
+on T1.id = T2.CategoryId
+ORDER BY T2.CategoryId
+
+
+
+-- 声明时间变量
+DECLARE @21stime date
+SET @21stime = '2021-01-01 00:00:00'
+DECLARE @21etime date
+SET @21etime = '2021-10-01 00:00:00'
+DECLARE @ICode int
+DECLARE @IName VARCHAR(max)
+DECLARE @Num decimal
+DECLARE @LearnNum decimal
+-- 定义游标
+DECLARE TempCursor CURSOR LOCAL FOR 
+(
+	SELECT ICode,IName FROM [dbo].[TB_BC_List_Down] where lx = 15
+);
+
+set @Num = (SELECT count(*) from TB_BC_JwInfo WHERE Res_Learn is not null)
+
+-- 打开游标
+Open TempCursor
+FETCH NEXT FROM TempCursor INTO @ICode,@IName;
+WHILE @@FETCH_STATUS = 0 
+	BEGIN
+		
+		set @LearnNum = (SELECT count(*) from dbo.TB_BC_JwApplyJob
+				INNER JOIN
+				dbo.TB_BC_JwInfo
+				ON 
+					TB_BC_JwApplyJob.JwSn = TB_BC_JwInfo.Jw_SN
+				WHERE 
+					TB_BC_JwApplyJob.ApplyDate >= @21stime
+				AND 
+					TB_BC_JwApplyJob.ApplyDate <= @21etime and Res_Learn is not null and Res_Learn = @ICode)
+		PRINT(concat(@IName,':',@LearnNum))
+		FETCH NEXT FROM TempCursor INTO @ICode,@IName;
+	END
+
+CLOSE TempCursor; --关闭游标
+DEALLOCATE TempCursor; --释放游标
+
+-- 声明时间变量
+DECLARE @21stime date
+SET @21stime = '2022-01-01 00:00:00'
+DECLARE @21etime date
+SET @21etime = '2022-10-01 00:00:00'
+
+-- 总数
+DECLARE @18_25Num int
+DECLARE @26_30Num int
+DECLARE @31_35Num int
+DECLARE @36_40Num int
+DECLARE @41_45Num int
+DECLARE @46_50Num int
+DECLARE @50_Num int
+DECLARE @other int
+
+set @18_25Num=(SELECT Count(1)
+FROM
+	dbo.TB_BC_InvitePerson
+	INNER JOIN
+	dbo.TB_BC_JwInfo
+	ON 
+		TB_BC_InvitePerson.Jw_SN = TB_BC_JwInfo.Jw_SN
+	WHERE 
+	  TB_BC_InvitePerson.Send_Date >= @21stime
+	AND 
+		TB_BC_InvitePerson.Send_Date <= @21etime and DATEDIFF(YEAR,Res_birthday,GETDATE()) >= 18 and DATEDIFF(YEAR,Res_birthday,GETDATE()) <= 25 and Res_birthday is not null  AND Res_birthday <> '1900-01-01 00:00:00.000')
+		
+
+set @26_30Num = (SELECT Count(1)
+FROM
+	dbo.TB_BC_InvitePerson
+	INNER JOIN
+	dbo.TB_BC_JwInfo
+	ON 
+		TB_BC_InvitePerson.Jw_SN = TB_BC_JwInfo.Jw_SN
+	WHERE 
+	  TB_BC_InvitePerson.Send_Date >= @21stime
+	AND 
+		TB_BC_InvitePerson.Send_Date <= @21etime and DATEDIFF(YEAR,Res_birthday,GETDATE()) >= 26 and DATEDIFF(YEAR,Res_birthday,GETDATE()) <= 30 and Res_birthday is not null  AND Res_birthday <> '1900-01-01 00:00:00.000')
+
+set @31_35Num = (SELECT Count(1)
+FROM
+	dbo.TB_BC_InvitePerson
+	INNER JOIN
+	dbo.TB_BC_JwInfo
+	ON 
+		TB_BC_InvitePerson.Jw_SN = TB_BC_JwInfo.Jw_SN
+	WHERE 
+	  TB_BC_InvitePerson.Send_Date >= @21stime
+	AND 
+		TB_BC_InvitePerson.Send_Date <= @21etime and DATEDIFF(YEAR,Res_birthday,GETDATE()) >= 31 and DATEDIFF(YEAR,Res_birthday,GETDATE()) <= 35 and Res_birthday is not null  AND Res_birthday <> '1900-01-01 00:00:00.000')
+
+set @36_40Num = (SELECT Count(1)
+FROM
+	dbo.TB_BC_InvitePerson
+	INNER JOIN
+	dbo.TB_BC_JwInfo
+	ON 
+		TB_BC_InvitePerson.Jw_SN = TB_BC_JwInfo.Jw_SN
+	WHERE 
+	  TB_BC_InvitePerson.Send_Date >= @21stime
+	AND 
+		TB_BC_InvitePerson.Send_Date <= @21etime and DATEDIFF(YEAR,Res_birthday,GETDATE()) >= 36 and DATEDIFF(YEAR,Res_birthday,GETDATE()) <= 40 and Res_birthday is not null  AND Res_birthday <> '1900-01-01 00:00:00.000')
+
+set @41_45Num = (SELECT Count(1)
+FROM
+	dbo.TB_BC_InvitePerson
+	INNER JOIN
+	dbo.TB_BC_JwInfo
+	ON 
+		TB_BC_InvitePerson.Jw_SN = TB_BC_JwInfo.Jw_SN
+	WHERE 
+	  TB_BC_InvitePerson.Send_Date >= @21stime
+	AND 
+		TB_BC_InvitePerson.Send_Date <= @21etime and DATEDIFF(YEAR,Res_birthday,GETDATE()) >= 41 and DATEDIFF(YEAR,Res_birthday,GETDATE()) <= 45 and Res_birthday is not null  AND Res_birthday <> '1900-01-01 00:00:00.000')
+
+set @46_50Num = (SELECT Count(1)
+FROM
+	dbo.TB_BC_InvitePerson
+	INNER JOIN
+	dbo.TB_BC_JwInfo
+	ON 
+		TB_BC_InvitePerson.Jw_SN = TB_BC_JwInfo.Jw_SN
+	WHERE 
+	  TB_BC_InvitePerson.Send_Date >= @21stime
+	AND 
+		TB_BC_InvitePerson.Send_Date <= @21etime and DATEDIFF(YEAR,Res_birthday,GETDATE()) >= 46 and DATEDIFF(YEAR,Res_birthday,GETDATE()) <= 50 and Res_birthday is not null  AND Res_birthday <> '1900-01-01 00:00:00.000')
+
+set @50_Num = (SELECT Count(1)
+FROM
+	dbo.TB_BC_InvitePerson
+	INNER JOIN
+	dbo.TB_BC_JwInfo
+	ON 
+		TB_BC_InvitePerson.Jw_SN = TB_BC_JwInfo.Jw_SN
+	WHERE 
+	  TB_BC_InvitePerson.Send_Date >= @21stime
+	AND 
+		TB_BC_InvitePerson.Send_Date <= @21etime and DATEDIFF(YEAR,Res_birthday,GETDATE()) > 50 and Res_birthday is not null  AND Res_birthday <> '1900-01-01 00:00:00.000')
+		
+set @other = (SELECT Count(1)
+FROM
+	dbo.TB_BC_InvitePerson
+	INNER JOIN
+	dbo.TB_BC_JwInfo
+	ON 
+		TB_BC_InvitePerson.Jw_SN = TB_BC_JwInfo.Jw_SN
+	WHERE 
+	  TB_BC_InvitePerson.Send_Date >= @21stime
+	AND 
+		TB_BC_InvitePerson.Send_Date <= @21etime and (Res_birthday is null  or Res_birthday = '1900-01-01 00:00:00.000'))
+
+SELECT '18-25岁' as 年龄分布,@18_25Num as 数量 UNION
+SELECT '26-30岁' as 年龄分布,@26_30Num as 数量 UNION
+SELECT '31-35岁' as 年龄分布,@31_35Num as 数量 UNION
+SELECT '36-40岁' as 年龄分布,@36_40Num as 数量 UNION
+SELECT '41-45岁' as 年龄分布,@41_45Num as 数量 UNION
+SELECT '46-50岁' as 年龄分布,@46_50Num as 数量 UNION
+SELECT '50以上' as 年龄分布,@50_Num as 数量 UNION
+SELECT '其他' as 年龄分布,@other as 数量
+
+
+-- 声明时间变量
+DECLARE @21stime date
+SET @21stime = '2021-01-01 00:00:00'
+DECLARE @21etime date
+SET @21etime = '2021-10-01 00:00:00'
+DECLARE @22stime date
+SET @22stime = '2022-01-01 00:00:00'
+DECLARE @22etime date
+SET @22etime = '2022-10-01 00:00:00'
+
+
+
+-----------------------------------------------------------------------------------------------------------
+-- 2022前三季度职位发布数
+SELECT '2022前三季度职位发布数' as title,COUNT(*) as num FROM [dbo].[TB_BC_JobOffer] WHERE AddTime >= @22stime and AddTime <= @22etime 
+UNION
+-- 2021前三季度职位发布数
+SELECT '2021前三季度职位发布数' as title, COUNT(*) as num FROM [dbo].[TB_BC_JobOffer] WHERE AddTime >= @21stime and AddTime <= @21etime
+
+
+
+-----------------------------------------------------------------------------------------------------------
+-- 2022年前三季度各区域职位数
+SELECT T2.RName as 区域,COUNT(T2.RName) as 数量 FROM
+(
+ SELECT left(JobWorkplaceCode,4) as Code FROM [dbo].[TB_BC_JobOffer] WHERE AddTime >= @22stime and AddTime <= @22etime
+) as T1
+INNER JOIN  
+(
+	SELECT left(name,2) as RName,left(class2,4) as Code FROM [dbo].[TB_BC_City] WHERE class1 = 123 and lx = 2
+) as T2
+On 
+T1.Code = T2.Code
+GROUP BY T2.code,T2.RName
+ORDER BY T2.code
+
+-- 2021年前三季度各区域职位数
+SELECT T2.RName as 区域,COUNT(T2.RName) as 数量 FROM
+(
+ SELECT left(JobWorkplaceCode,4) as Code FROM [dbo].[TB_BC_JobOffer] WHERE AddTime >= @21stime and AddTime <= @21etime
+) as T1
+INNER JOIN  
+(
+	SELECT left(name,2) as RName,left(class2,4) as Code FROM [dbo].[TB_BC_City] WHERE class1 = 123 and lx = 2
+) as T2
+On 
+T1.Code = T2.Code
+GROUP BY T2.code,T2.RName
+ORDER BY T2.code
+
+
+-----------------------------------------------------------------------------------------------------------
+-- 前三季度发布职位企业数
+SELECT
+	'21年前三季度企业数量' as title, COUNT( * ) as num
+FROM
+	(
+	SELECT DISTINCT
+		EntSn,
+		CityCode 
+	FROM
+		dbo.TB_BC_JobOffer
+		INNER JOIN dbo.TB_BC_EntInfo ON TB_BC_JobOffer.EntSn = TB_BC_EntInfo.Ent_SN 
+	WHERE
+		TB_BC_JobOffer.AddTime >= @21stime 
+	AND TB_BC_JobOffer.AddTime <= @21etime 
+	) as t
+UNION
+SELECT
+	'21年前三季度企业数量' as title,  COUNT( * ) as num
+FROM
+	(
+	SELECT DISTINCT
+		EntSn,
+		CityCode 
+	FROM
+		dbo.TB_BC_JobOffer
+		INNER JOIN dbo.TB_BC_EntInfo ON TB_BC_JobOffer.EntSn = TB_BC_EntInfo.Ent_SN 
+	WHERE
+		TB_BC_JobOffer.AddTime >= @22stime
+	AND TB_BC_JobOffer.AddTime <= @22etime
+	) as t
+
+
+-----------------------------------------------------------------------------------------------------------
+-- 2021年前三季度各区域企业数
+SELECT T2.RName as 区域,COUNT(T2.RName) as 数量 FROM
+(
+ SELECT left(CityCode,4) as Code FROM 
+ (
+		SELECT DISTINCT
+			EntSn,
+			CityCode 
+		FROM
+			dbo.TB_BC_JobOffer
+			INNER JOIN dbo.TB_BC_EntInfo ON TB_BC_JobOffer.EntSn = TB_BC_EntInfo.Ent_SN 
+		WHERE
+			TB_BC_JobOffer.AddTime >= @21stime
+		AND TB_BC_JobOffer.AddTime <= @21etime
+ ) as t
+) as T1
+INNER JOIN  
+(
+	SELECT left(name,2) as RName,left(class2,4) as Code FROM [dbo].[TB_BC_City] WHERE class1 = 123 and lx = 2
+) as T2
+On 
+T1.Code = T2.Code
+GROUP BY T2.code,T2.RName
+ORDER BY T2.code
+
+-- 2022年前三季度各区域企业数
+SELECT T2.RName as 区域,COUNT(T2.RName) as 数量 FROM
+(
+ SELECT left(CityCode,4) as Code FROM 
+ (
+		SELECT DISTINCT
+			EntSn,
+			CityCode 
+		FROM
+			dbo.TB_BC_JobOffer
+			INNER JOIN dbo.TB_BC_EntInfo ON TB_BC_JobOffer.EntSn = TB_BC_EntInfo.Ent_SN 
+		WHERE
+			TB_BC_JobOffer.AddTime >= @22stime
+		AND TB_BC_JobOffer.AddTime <= @22etime
+ ) as t
+) as T1
+INNER JOIN  
+(
+	SELECT left(name,2) as RName,left(class2,4) as Code FROM [dbo].[TB_BC_City] WHERE class1 = 123 and lx = 2
+) as T2
+On 
+T1.Code = T2.Code
+GROUP BY T2.code,T2.RName
+ORDER BY T2.code
+
+
+-----------------------------------------------------------------------------------------------------------
+-- 2022前三季度职位发布数
+SELECT '2022前三季度职位招聘人数' as title,Sum(Job_People_Count) as num FROM [dbo].[TB_BC_JobOffer] WHERE AddTime >= @22stime and AddTime <= @22etime 
+UNION
+-- 2021前三季度职位发布数
+SELECT '2021前三季度职位招聘人数' as title, SUM(Job_People_Count) as num FROM [dbo].[TB_BC_JobOffer] WHERE AddTime >= @21stime and AddTime <= @21etime
+
+
+-----------------------------------------------------------------------------------------------------------
+-- 2022年前三季度各区域招聘人数
+SELECT T2.RName as 区域,sum(T1.pcount) as 数量 FROM
+(
+ SELECT left(JobWorkplaceCode,4) as Code,Job_People_Count as pcount FROM [dbo].[TB_BC_JobOffer] WHERE AddTime >= @22stime and AddTime <= @22etime
+) as T1
+INNER JOIN  
+(
+	SELECT left(name,2) as RName,left(class2,4) as Code FROM [dbo].[TB_BC_City] WHERE class1 = 123 and lx = 2
+) as T2
+On 
+T1.Code = T2.Code
+GROUP BY T2.code,T2.RName
+ORDER BY T2.code
+
+-- 2021年前三季度各区域招聘人数
+SELECT T2.RName as 区域,sum(T1.pcount) as 数量 FROM
+(
+ SELECT left(JobWorkplaceCode,4) as Code,Job_People_Count as pcount FROM [dbo].[TB_BC_JobOffer] WHERE AddTime >= @21stime and AddTime <= @21etime
+) as T1
+INNER JOIN  
+(
+	SELECT left(name,2) as RName,left(class2,4) as Code FROM [dbo].[TB_BC_City] WHERE class1 = 123 and lx = 2
+) as T2
+On 
+T1.Code = T2.Code
+GROUP BY T2.code,T2.RName
+ORDER BY T2.code
+
+
+-----------------------------------------------------------------------------------------------------------
+-- 21年前三季度投递数
+SELECT
+	count(*)
+FROM
+	dbo.TB_BC_JwApplyJob
+	WHERE 
+	  TB_BC_JwApplyJob.ApplyDate >= @21stime
+	AND 
+		TB_BC_JwApplyJob.ApplyDate <= @21etime
+
+-- 22年前三季度投递数
+SELECT
+	count(*)
+FROM
+	dbo.TB_BC_JwApplyJob
+	WHERE 
+	  TB_BC_JwApplyJob.ApplyDate >= @22stime
+	AND 
+		TB_BC_JwApplyJob.ApplyDate <= @22etime
+
+-----------------------------------------------------------------------------------------------------------
+-- 21年各区域投递人数
+SELECT
+	count(*)
+FROM
+	dbo.TB_BC_JwApplyJob
+	INNER JOIN
+	dbo.TB_BC_JobOffer
+	ON 
+		TB_BC_JwApplyJob.JobSn = TB_BC_JobOffer.JobSn
+	WHERE 
+	  TB_BC_JwApplyJob.ApplyDate >= @21stime
+	AND 
+		TB_BC_JwApplyJob.ApplyDate <= @21etime
+		
+-----------------------------------------------------------------------------------------------------------
+-- 21年各区域投递人数
+SELECT T2.RName as 区域,count(1) as 数量 FROM
+(
+ SELECT
+		left(JobWorkplaceCode,4) as Code
+	FROM
+		dbo.TB_BC_JwApplyJob
+		INNER JOIN
+		dbo.TB_BC_JobOffer
+		ON 
+			TB_BC_JwApplyJob.JobSn = TB_BC_JobOffer.JobSn
+		WHERE 
+			TB_BC_JwApplyJob.ApplyDate >= @21stime
+		AND 
+			TB_BC_JwApplyJob.ApplyDate <= @21etime
+) as T1
+INNER JOIN  
+(
+	SELECT left(name,2) as RName,left(class2,4) as Code FROM [dbo].[TB_BC_City] WHERE class1 = 123 and lx = 2
+) as T2
+On 
+T1.Code = T2.Code
+GROUP BY T2.code,T2.RName
+ORDER BY T2.code
+
+-- 21年各区域投递人数
+SELECT T2.RName as 区域,count(1) as 数量 FROM
+(
+ SELECT
+		left(JobWorkplaceCode,4) as Code
+	FROM
+		dbo.TB_BC_JwApplyJob
+		INNER JOIN
+		dbo.TB_BC_JobOffer
+		ON 
+			TB_BC_JwApplyJob.JobSn = TB_BC_JobOffer.JobSn
+		WHERE 
+			TB_BC_JwApplyJob.ApplyDate >= @22stime
+		AND 
+			TB_BC_JwApplyJob.ApplyDate <= @22etime
+) as T1
+INNER JOIN  
+(
+	SELECT left(name,2) as RName,left(class2,4) as Code FROM [dbo].[TB_BC_City] WHERE class1 = 123 and lx = 2
+) as T2
+On 
+T1.Code = T2.Code
+GROUP BY T2.code,T2.RName
+ORDER BY T2.code
+
+-----------------------------------------------------------------------------------------------------------
+-- 21年前三季度邀请数
+SELECT
+	count(*)
+FROM
+	dbo.TB_BC_InvitePerson
+	WHERE 
+	  TB_BC_InvitePerson.Send_Date >= @21stime
+	AND 
+		TB_BC_InvitePerson.Send_Date <= @21etime
+
+-- 22年前三季度邀请数
+SELECT
+	count(*)
+FROM
+	dbo.TB_BC_InvitePerson
+	WHERE 
+	  TB_BC_InvitePerson.Send_Date >= @22stime
+	AND 
+		TB_BC_InvitePerson.Send_Date <= @22etime
+		
+
+-----------------------------------------------------------------------------------------------------------
+-- 21年各区域邀请人数
+SELECT T2.RName as 区域,count(1) as 数量 FROM
+(
+ SELECT
+		left(JobWorkplaceCode,4) as Code
+	FROM
+		dbo.TB_BC_InvitePerson
+		INNER JOIN
+		dbo.TB_BC_JobOffer
+		ON 
+			TB_BC_InvitePerson.Job_SN = TB_BC_JobOffer.JobSn
+		WHERE 
+			TB_BC_InvitePerson.Send_Date >= @21stime
+		AND 
+			TB_BC_InvitePerson.Send_Date <= @21etime
+) as T1
+INNER JOIN  
+(
+	SELECT left(name,2) as RName,left(class2,4) as Code FROM [dbo].[TB_BC_City] WHERE class1 = 123 and lx = 2
+) as T2
+On 
+T1.Code = T2.Code
+GROUP BY T2.code,T2.RName
+ORDER BY T2.code
+
+-- 21年各区域邀请人数
+SELECT T2.RName as 区域,count(1) as 数量 FROM
+(
+ SELECT
+		left(JobWorkplaceCode,4) as Code
+	FROM
+		dbo.TB_BC_InvitePerson
+		INNER JOIN
+		dbo.TB_BC_JobOffer
+		ON 
+			TB_BC_InvitePerson.Job_SN = TB_BC_JobOffer.JobSn
+		WHERE 
+			TB_BC_InvitePerson.Send_Date >= @22stime
+		AND 
+			TB_BC_InvitePerson.Send_Date <= @22etime
+) as T1
+INNER JOIN  
+(
+	SELECT left(name,2) as RName,left(class2,4) as Code FROM [dbo].[TB_BC_City] WHERE class1 = 123 and lx = 2
+) as T2
+On 
+T1.Code = T2.Code
+GROUP BY T2.code,T2.RName
+ORDER BY T2.code
+
+
+
+-- 声明时间变量
+DECLARE @21stime date
+SET
+	@21stime = '2021-01-01 00:00:00' DECLARE @21etime date
+SET
+	@21etime = '2021-10-01 00:00:00' DECLARE @22stime date
+SET
+	@22stime = '2022-01-01 00:00:00' DECLARE @22etime date
+SET
+	@22etime = '2022-10-01 00:00:00' 
+	-----------------------------------------------------------------------------------------------------------
+	-- 2022前三季度职位发布数
+SELECT
+	'2022前三季度职位发布数' as title,
+	COUNT(*) as num
+FROM
+	[dbo].[TB_BC_JobOffer]
+WHERE
+	AddTime >= @22stime
+	and AddTime <= @22etime
+UNION
+-- 2021前三季度职位发布数
+SELECT
+	'2021前三季度职位发布数' as title,
+	COUNT(*) as num
+FROM
+	[dbo].[TB_BC_JobOffer]
+WHERE
+	AddTime >= @21stime
+	and AddTime <= @21etime 
+	-----------------------------------------------------------------------------------------------------------
+	-- 2022年前三季度各区域职位数
+SELECT
+	T2.RName as 区域,
+	COUNT(T2.RName) as 数量
+FROM
+	(
+		SELECT
+			left(JobWorkplaceCode, 4) as Code
+		FROM
+			[dbo].[TB_BC_JobOffer]
+		WHERE
+			AddTime >= @22stime
+			and AddTime <= @22etime
+	) as T1
+	INNER JOIN (
+		SELECT
+			left(name, 2) as RName,
+			left(class2, 4) as Code
+		FROM
+			[dbo].[TB_BC_City]
+		WHERE
+			class1 = 123
+			and lx = 2
+	) as T2 On T1.Code = T2.Code
+GROUP BY
+	T2.code,
+	T2.RName
+ORDER BY
+	T2.code -- 2021年前三季度各区域职位数
+SELECT
+	T2.RName as 区域,
+	COUNT(T2.RName) as 数量
+FROM
+	(
+		SELECT
+			left(JobWorkplaceCode, 4) as Code
+		FROM
+			[dbo].[TB_BC_JobOffer]
+		WHERE
+			AddTime >= @21stime
+			and AddTime <= @21etime
+	) as T1
+	INNER JOIN (
+		SELECT
+			left(name, 2) as RName,
+			left(class2, 4) as Code
+		FROM
+			[dbo].[TB_BC_City]
+		WHERE
+			class1 = 123
+			and lx = 2
+	) as T2 On T1.Code = T2.Code
+GROUP BY
+	T2.code,
+	T2.RName
+ORDER BY
+	T2.code 
+-------------------------------------------------------------------------- 前三季度发布职位企业数
+SELECT
+	'21年前三季度企业数量' as title,
+	COUNT(*) as num
+FROM
+	(
+		SELECT
+			DISTINCT EntSn,
+			CityCode
+		FROM
+			dbo.TB_BC_JobOffer
+			INNER JOIN dbo.TB_BC_EntInfo ON TB_BC_JobOffer.EntSn = TB_BC_EntInfo.Ent_SN
+		WHERE
+			TB_BC_JobOffer.AddTime >= @21stime
+			AND TB_BC_JobOffer.AddTime <= @21etime
+	) as t
+UNION
+SELECT
+	'21年前三季度企业数量' as title,
+	COUNT(*) as num
+FROM
+	(
+		SELECT
+			DISTINCT EntSn,
+			CityCode
+		FROM
+			dbo.TB_BC_JobOffer
+			INNER JOIN dbo.TB_BC_EntInfo ON TB_BC_JobOffer.EntSn = TB_BC_EntInfo.Ent_SN
+		WHERE
+			TB_BC_JobOffer.AddTime >= @22stime
+			AND TB_BC_JobOffer.AddTime <= @22etime
+	) as t -----------------------------------------------------------------------------------------------------------
+	-- 2021年前三季度各区域企业数
+SELECT
+	T2.RName as 区域,
+	COUNT(T2.RName) as 数量
+FROM
+	(
+		SELECT
+			left(CityCode, 4) as Code
+		FROM
+			(
+				SELECT
+					DISTINCT EntSn,
+					CityCode
+				FROM
+					dbo.TB_BC_JobOffer
+					INNER JOIN dbo.TB_BC_EntInfo ON TB_BC_JobOffer.EntSn = TB_BC_EntInfo.Ent_SN
+				WHERE
+					TB_BC_JobOffer.AddTime >= @21stime
+					AND TB_BC_JobOffer.AddTime <= @21etime
+			) as t
+	) as T1
+	INNER JOIN (
+		SELECT
+			left(name, 2) as RName,
+			left(class2, 4) as Code
+		FROM
+			[dbo].[TB_BC_City]
+		WHERE
+			class1 = 123
+			and lx = 2
+	) as T2 On T1.Code = T2.Code
+GROUP BY
+	T2.code,
+	T2.RName
+ORDER BY
+	T2.code 
+
+-- 2022年前三季度各区域企业数
+SELECT
+	T2.RName as 区域,
+	COUNT(T2.RName) as 数量
+FROM
+	(
+		SELECT
+			left(CityCode, 4) as Code
+		FROM
+			(
+				SELECT
+					DISTINCT EntSn,
+					CityCode
+				FROM
+					dbo.TB_BC_JobOffer
+					INNER JOIN dbo.TB_BC_EntInfo ON TB_BC_JobOffer.EntSn = TB_BC_EntInfo.Ent_SN
+				WHERE
+					TB_BC_JobOffer.AddTime >= @22stime
+					AND TB_BC_JobOffer.AddTime <= @22etime
+			) as t
+	) as T1
+	INNER JOIN (
+		SELECT
+			left(name, 2) as RName,
+			left(class2, 4) as Code
+		FROM
+			[dbo].[TB_BC_City]
+		WHERE
+			class1 = 123
+			and lx = 2
+	) as T2 On T1.Code = T2.Code
+GROUP BY
+	T2.code,
+	T2.RName
+ORDER BY
+	T2.code -----------------------------------------------------------------------------------------------------------
+	-- 2022前三季度职位发布数
+SELECT
+	'2022前三季度职位招聘人数' as title,
+	Sum(Job_People_Count) as num
+FROM
+	[dbo].[TB_BC_JobOffer]
+WHERE
+	AddTime >= @22stime
+	and AddTime <= @22etime
+UNION
+-- 2021前三季度职位发布数
+SELECT
+	'2021前三季度职位招聘人数' as title,
+	SUM(Job_People_Count) as num
+FROM
+	[dbo].[TB_BC_JobOffer]
+WHERE
+	AddTime >= @21stime
+	and AddTime <= @21etime -----------------------------------------------------------------------------------------------------------
+	-- 2022年前三季度各区域招聘人数
+SELECT
+	T2.RName as 区域,
+	sum(T1.pcount) as 数量
+FROM
+	(
+		SELECT
+			left(JobWorkplaceCode, 4) as Code,
+			Job_People_Count as pcount
+		FROM
+			[dbo].[TB_BC_JobOffer]
+		WHERE
+			AddTime >= @22stime
+			and AddTime <= @22etime
+	) as T1
+	INNER JOIN (
+		SELECT
+			left(name, 2) as RName,
+			left(class2, 4) as Code
+		FROM
+			[dbo].[TB_BC_City]
+		WHERE
+			class1 = 123
+			and lx = 2
+	) as T2 On T1.Code = T2.Code
+GROUP BY
+	T2.code,
+	T2.RName
+ORDER BY
+	T2.code -- 2021年前三季度各区域招聘人数
+SELECT
+	T2.RName as 区域,
+	sum(T1.pcount) as 数量
+FROM
+	(
+		SELECT
+			left(JobWorkplaceCode, 4) as Code,
+			Job_People_Count as pcount
+		FROM
+			[dbo].[TB_BC_JobOffer]
+		WHERE
+			AddTime >= @21stime
+			and AddTime <= @21etime
+	) as T1
+	INNER JOIN (
+		SELECT
+			left(name, 2) as RName,
+			left(class2, 4) as Code
+		FROM
+			[dbo].[TB_BC_City]
+		WHERE
+			class1 = 123
+			and lx = 2
+	) as T2 On T1.Code = T2.Code
+GROUP BY
+	T2.code,
+	T2.RName
+ORDER BY
+	T2.code -----------------------------------------------------------------------------------------------------------
+	-- 21年前三季度投递数
+SELECT
+	count(*)
+FROM
+	dbo.TB_BC_JwApplyJob
+WHERE
+	TB_BC_JwApplyJob.ApplyDate >= @21stime
+	AND TB_BC_JwApplyJob.ApplyDate <= @21etime -- 22年前三季度投递数
+SELECT
+	count(*)
+FROM
+	dbo.TB_BC_JwApplyJob
+WHERE
+	TB_BC_JwApplyJob.ApplyDate >= @22stime
+	AND TB_BC_JwApplyJob.ApplyDate <= @22etime -----------------------------------------------------------------------------------------------------------
+	-- 21年各区域投递人数
+SELECT
+	T2.RName as 区域,
+	count(1) as 数量
+FROM
+	(
+		SELECT
+			left(JobWorkplaceCode, 4) as Code
+		FROM
+			dbo.TB_BC_JwApplyJob
+			INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_JwApplyJob.JobSn = TB_BC_JobOffer.JobSn
+		WHERE
+			TB_BC_JwApplyJob.ApplyDate >= @21stime
+			AND TB_BC_JwApplyJob.ApplyDate <= @21etime
+	) as T1
+	INNER JOIN (
+		SELECT
+			left(name, 2) as RName,
+			left(class2, 4) as Code
+		FROM
+			[dbo].[TB_BC_City]
+		WHERE
+			class1 = 123
+			and lx = 2
+	) as T2 On T1.Code = T2.Code
+GROUP BY
+	T2.code,
+	T2.RName
+ORDER BY
+	T2.code -- 22年各区域投递人数
+SELECT
+	T2.RName as 区域,
+	count(1) as 数量
+FROM
+	(
+		SELECT
+			left(JobWorkplaceCode, 4) as Code
+		FROM
+			dbo.TB_BC_JwApplyJob
+			INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_JwApplyJob.JobSn = TB_BC_JobOffer.JobSn
+		WHERE
+			TB_BC_JwApplyJob.ApplyDate >= @22stime
+			AND TB_BC_JwApplyJob.ApplyDate <= @22etime
+	) as T1
+	INNER JOIN (
+		SELECT
+			left(name, 2) as RName,
+			left(class2, 4) as Code
+		FROM
+			[dbo].[TB_BC_City]
+		WHERE
+			class1 = 123
+			and lx = 2
+	) as T2 On T1.Code = T2.Code
+GROUP BY
+	T2.code,
+	T2.RName
+ORDER BY
+	T2.code -----------------------------------------------------------------------------------------------------------
+	-- 21年前三季度邀请数
+SELECT
+	count(*)
+FROM
+	dbo.TB_BC_InvitePerson
+WHERE
+	TB_BC_InvitePerson.Send_Date >= @21stime
+	AND TB_BC_InvitePerson.Send_Date <= @21etime -- 22年前三季度邀请数
+SELECT
+	count(*)
+FROM
+	dbo.TB_BC_InvitePerson
+WHERE
+	TB_BC_InvitePerson.Send_Date >= @22stime
+	AND TB_BC_InvitePerson.Send_Date <= @22etime -----------------------------------------------------------------------------------------------------------
+	-- 21年各区域邀请人数
+SELECT
+	T2.RName as 区域,
+	count(1) as 数量
+FROM
+	(
+		SELECT
+			left(JobWorkplaceCode, 4) as Code
+		FROM
+			dbo.TB_BC_InvitePerson
+			INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_InvitePerson.Job_SN = TB_BC_JobOffer.JobSn
+		WHERE
+			TB_BC_InvitePerson.Send_Date >= @21stime
+			AND TB_BC_InvitePerson.Send_Date <= @21etime
+	) as T1
+	INNER JOIN (
+		SELECT
+			left(name, 2) as RName,
+			left(class2, 4) as Code
+		FROM
+			[dbo].[TB_BC_City]
+		WHERE
+			class1 = 123
+			and lx = 2
+	) as T2 On T1.Code = T2.Code
+GROUP BY
+	T2.code,
+	T2.RName
+ORDER BY
+	T2.code -- 21年各区域邀请人数
+SELECT
+	T2.RName as 区域,
+	count(1) as 数量
+FROM
+	(
+		SELECT
+			left(JobWorkplaceCode, 4) as Code
+		FROM
+			dbo.TB_BC_InvitePerson
+			INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_InvitePerson.Job_SN = TB_BC_JobOffer.JobSn
+		WHERE
+			TB_BC_InvitePerson.Send_Date >= @22stime
+			AND TB_BC_InvitePerson.Send_Date <= @22etime
+	) as T1
+	INNER JOIN (
+		SELECT
+			left(name, 2) as RName,
+			left(class2, 4) as Code
+		FROM
+			[dbo].[TB_BC_City]
+		WHERE
+			class1 = 123
+			and lx = 2
+	) as T2 On T1.Code = T2.Code
+GROUP BY
+	T2.code,
+	T2.RName
+ORDER BY
+	T2.code
+
+DECLARE @21stime date
+SET @21stime = '2021-01-01 00:00:00'
+DECLARE @21etime date
+SET @21etime = '2021-10-01 00:00:00'
+DECLARE @22stime date
+SET @22stime = '2022-01-01 00:00:00'
+DECLARE @22etime date
+SET @22etime = '2022-10-01 00:00:00'
+
+-- 按职位类别统计
+-----------------------------------------------------------------------------------------------------------
+-- 2021年前三季度岗位数
+SELECT T2.Name,T1.num FROM
+(
+	SELECT
+		b.ParentId as id,count(1) as num
+	FROM
+		dbo.TB_BC_JobOffer as a
+		left JOIN
+		dbo.TB_BC_JobCategory as b
+		ON 
+			a.JobCategory = b.CategoryId
+	WHERE
+		a.AddTime >= @21stime
+	AND a.AddTime <= @21etime
+	GROUP BY b.ParentId
+) as T1
+LEFT JOIN
+dbo.TB_BC_JobCategory T2
+on T1.id = T2.CategoryId
+ORDER BY T2.CategoryId
+
+-- 2021年前三季度岗位数
+SELECT T2.Name,T1.num FROM
+(
+	SELECT
+		b.ParentId as id,count(1) as num
+	FROM
+		dbo.TB_BC_JobOffer as a
+		left JOIN
+		dbo.TB_BC_JobCategory as b
+		ON 
+			a.JobCategory = b.CategoryId
+	WHERE
+		a.AddTime >= @22stime
+	AND a.AddTime <= @22etime
+	GROUP BY b.ParentId
+) as T1
+LEFT JOIN
+dbo.TB_BC_JobCategory T2
+on T1.id = T2.CategoryId
+ORDER BY T2.CategoryId
+
+
+-----------------------------------------------------------------------------------------------------------
+-- 2021年前三季度招聘人数
+SELECT T2.Name,T1.num FROM
+(
+	SELECT
+		b.ParentId as id,SUM(Job_People_Count) as num
+	FROM
+		dbo.TB_BC_JobOffer as a
+		left JOIN
+		dbo.TB_BC_JobCategory as b
+		ON 
+			a.JobCategory = b.CategoryId
+	WHERE
+		a.AddTime >= @21stime
+	AND a.AddTime <= @21etime
+	GROUP BY b.ParentId
+) as T1
+LEFT JOIN
+dbo.TB_BC_JobCategory T2
+on T1.id = T2.CategoryId
+ORDER BY T2.CategoryId
+
+-- 2022年前三季度招聘人数
+SELECT T2.Name,T1.num FROM
+(
+	SELECT
+		b.ParentId as id,SUM(Job_People_Count) as num
+	FROM
+		dbo.TB_BC_JobOffer as a
+		left JOIN
+		dbo.TB_BC_JobCategory as b
+		ON 
+			a.JobCategory = b.CategoryId
+	WHERE
+		a.AddTime >= @22stime
+	AND a.AddTime <= @22etime
+	GROUP BY b.ParentId
+) as T1
+LEFT JOIN
+dbo.TB_BC_JobCategory T2
+on T1.id = T2.CategoryId
+ORDER BY T2.CategoryId
+
+-----------------------------------------------------------------------------------------------------------
+-- 2021年前三季度投递人数
+SELECT T2.Name,T1.num FROM
+(
+	SELECT
+		c.ParentId as id,count(1) as num
+		FROM
+			dbo.TB_BC_JobOffer as a
+		LEFT JOIN
+		dbo.TB_BC_JwApplyJob as b
+		ON 
+			a.JobSn = b.JobSn
+		LEFT JOIN
+		dbo.TB_BC_JobCategory as c
+		ON 
+			a.JobCategory = c.CategoryId
+	WHERE
+		b.ApplyDate >= @21stime
+	AND b.ApplyDate <= @21etime
+	GROUP BY c.ParentId
+) as T1
+LEFT JOIN
+dbo.TB_BC_JobCategory T2
+on T1.id = T2.CategoryId
+ORDER BY T2.CategoryId
+
+-- 2022年前三季度投递人数
+SELECT T2.Name,T1.num FROM
+(
+	SELECT
+		c.ParentId as id,count(1) as num
+		FROM
+			dbo.TB_BC_JobOffer as a
+		LEFT JOIN
+		dbo.TB_BC_JwApplyJob as b
+		ON 
+			a.JobSn = b.JobSn
+		LEFT JOIN
+		dbo.TB_BC_JobCategory as c
+		ON 
+			a.JobCategory = c.CategoryId
+	WHERE
+		b.ApplyDate >= @22stime
+	AND b.ApplyDate <= @22etime
+	GROUP BY c.ParentId
+) as T1
+LEFT JOIN
+dbo.TB_BC_JobCategory T2
+on T1.id = T2.CategoryId
+ORDER BY T2.CategoryId
+
+-----------------------------------------------------------------------------------------------------------
+-- 2021年前三季度邀请人数
+SELECT T2.Name,T1.num FROM
+(
+	SELECT
+		c.ParentId as id,count(1) as num
+		FROM
+			dbo.TB_BC_JobOffer as a
+		LEFT JOIN
+		dbo.TB_BC_InvitePerson as b
+		ON 
+			a.JobSn = b.Job_SN
+		LEFT JOIN
+		dbo.TB_BC_JobCategory as c
+		ON 
+			a.JobCategory = c.CategoryId
+	WHERE
+		b.Send_Date >= @21stime
+	AND b.Send_Date <= @21etime
+	GROUP BY c.ParentId
+) as T1
+LEFT JOIN
+dbo.TB_BC_JobCategory T2
+on T1.id = T2.CategoryId
+ORDER BY T2.CategoryId
+
+-- 2022年前三季度投递人数
+SELECT T2.Name,T1.num FROM
+(
+	SELECT
+		c.ParentId as id,count(1) as num
+		FROM
+			dbo.TB_BC_JobOffer as a
+		LEFT JOIN
+		dbo.TB_BC_InvitePerson as b
+		ON 
+			a.JobSn = b.Job_SN
+		LEFT JOIN
+		dbo.TB_BC_JobCategory as c
+		ON 
+			a.JobCategory = c.CategoryId
+	WHERE
+		b.Send_Date >= @22stime
+	AND b.Send_Date <= @22etime
+	GROUP BY c.ParentId
+) as T1
+LEFT JOIN
+dbo.TB_BC_JobCategory T2
+on T1.id = T2.CategoryId
+ORDER BY T2.CategoryId
+
+SELECT
+	'出口' AS 行业类别,
+	COUNT ( DISTINCT ( t.企业 ) ) AS 企业数量,
+	COUNT ( DISTINCT ( t.招聘职位 ) ) AS 招聘职位数量,
+	SUM ( t.招聘人数 ) AS 招聘人数 
+FROM
+	(
+	SELECT DISTINCT
+		TB_BC_EntInfo.Ent_SN AS 企业,
+		TB_BC_JobOffer.JobSn AS 招聘职位,
+		TB_BC_JobOffer.Job_People_Count AS 招聘人数 
+	FROM
+		dbo.TB_BC_EntInfo
+		INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn 
+	WHERE
+		Ent_intro LIKE N'%出口%' 
+		OR Ent_intro LIKE N'%外贸%' 
+	) AS t UNION
+SELECT
+	'现代物流业' AS 行业类别,
+	COUNT ( DISTINCT ( t.企业 ) ) AS 企业数量,
+	COUNT ( DISTINCT ( t.招聘职位 ) ) AS 招聘职位数量,
+	SUM ( t.招聘人数 ) AS 招聘人数 
+FROM
+	(
+	SELECT DISTINCT
+		TB_BC_EntInfo.Ent_SN AS 企业,
+		TB_BC_JobOffer.JobSn AS 招聘职位,
+		TB_BC_JobOffer.Job_People_Count AS 招聘人数 
+	FROM
+		dbo.TB_BC_EntInfo
+		INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn 
+	WHERE
+		Ent_intro LIKE N'%物流%' 
+		OR Ent_intro LIKE N'%配送%' 
+		OR Ent_intro LIKE N'%货运%' 
+		OR Ent_intro LIKE N'%仓储%' 
+		OR Ent_intro LIKE N'%分拣%' 
+		OR Ent_intro LIKE N'%分拨%' 
+		OR Ent_intro LIKE N'%冷库%' 
+	OR Ent_intro LIKE N'%冷链%' 
+	) AS t UNION
+SELECT
+	'文旅康养' AS 行业类别,
+	COUNT ( DISTINCT ( t.企业 ) ) AS 企业数量,
+	COUNT ( DISTINCT ( t.招聘职位 ) ) AS 招聘职位数量,
+	SUM ( t.招聘人数 ) AS 招聘人数 
+FROM
+	(
+	SELECT DISTINCT
+		TB_BC_EntInfo.Ent_SN AS 企业,
+		TB_BC_JobOffer.JobSn AS 招聘职位,
+		TB_BC_JobOffer.Job_People_Count AS 招聘人数 
+	FROM
+		dbo.TB_BC_EntInfo
+		INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn 
+	WHERE
+	Ent_intro LIKE N'%旅游%' 
+	OR Ent_intro LIKE N'%亲子%' 
+	OR Ent_intro LIKE N'%自驾%' 
+	OR Ent_intro LIKE N'%景区%' 
+	OR Ent_intro LIKE N'%民宿%' 
+	OR Ent_intro LIKE N'%度假%' 
+	OR Ent_intro LIKE N'%休闲%' 
+	OR Ent_intro LIKE N'%文旅康养%' 
+	OR Ent_intro LIKE N'%养老基地%' 
+	OR Ent_intro LIKE N'%康养基地%' 
+	) AS t UNION
+SELECT
+	'数字经济' AS 行业类别,
+	COUNT ( DISTINCT ( t.企业 ) ) AS 企业数量,
+	COUNT ( DISTINCT ( t.招聘职位 ) ) AS 招聘职位数量,
+	SUM ( t.招聘人数 ) AS 招聘人数 
+FROM
+	(
+	SELECT DISTINCT
+		TB_BC_EntInfo.Ent_SN AS 企业,
+		TB_BC_JobOffer.JobSn AS 招聘职位,
+		TB_BC_JobOffer.Job_People_Count AS 招聘人数 
+	FROM
+		dbo.TB_BC_EntInfo
+		INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn 
+	WHERE
+	Ent_intro LIKE N'%数字经济%' 
+	OR Ent_intro LIKE N'%智能终端%' 
+	OR Ent_intro LIKE N'%半导体%' 
+	OR Ent_intro LIKE N'%信创%' 
+	OR Ent_intro LIKE N'%电子材料%' 
+	OR Ent_intro LIKE N'%手机%' 
+	OR Ent_intro LIKE N'%电脑%' 
+	OR Ent_intro LIKE N'%平板电脑%' 
+	OR Ent_intro LIKE N'%PC机%' 
+	OR Ent_intro LIKE N'%电脑%' 
+	OR Ent_intro LIKE N'%网络设备%' 
+	OR Ent_intro LIKE N'%数码%' 
+	OR Ent_intro LIKE N'%网络销售%' 
+	OR Ent_intro LIKE N'%软件%' 
+	OR Ent_intro LIKE N'%信息技术%' 
+	OR Ent_intro LIKE N'%5G%' 
+	OR Ent_intro LIKE N'%物联网%'
+	OR Ent_intro LIKE N'%大数据%'
+	OR Ent_intro LIKE N'%数字农业%'
+	OR Ent_intro LIKE N'%智能制造%'
+	OR Ent_intro LIKE N'%智慧旅游%'
+	OR Ent_intro LIKE N'%数字文创%'
+	OR Ent_intro LIKE N'%数字商贸%'
+	OR Ent_intro LIKE N'%智慧物流%'
+	OR Ent_intro LIKE N'%智慧园区%'
+	OR Ent_intro LIKE N'%智慧景区%'
+	OR Ent_intro LIKE N'%直播电商%'
+	OR Ent_intro LIKE N'%虚拟产业园%'
+	OR Ent_intro LIKE N'%数字经济园区%'
+	) AS t UNION
+SELECT
+	'生物医药' AS 行业类别,
+	COUNT ( DISTINCT ( t.企业 ) ) AS 企业数量,
+	COUNT ( DISTINCT ( t.招聘职位 ) ) AS 招聘职位数量,
+	SUM ( t.招聘人数 ) AS 招聘人数 
+FROM
+	(
+	SELECT DISTINCT
+		TB_BC_EntInfo.Ent_SN AS 企业,
+		TB_BC_JobOffer.JobSn AS 招聘职位,
+		TB_BC_JobOffer.Job_People_Count AS 招聘人数 
+	FROM
+		dbo.TB_BC_EntInfo
+		INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn 
+	WHERE
+	Ent_intro LIKE N'%生物%' 
+	OR Ent_intro LIKE N'%医药%' 
+	OR Ent_intro LIKE N'%三七%' 
+	OR Ent_intro LIKE N'%石斛%' 
+	OR Ent_intro LIKE N'%天麻%' 
+	OR Ent_intro LIKE N'%中药材%' 
+	OR Ent_intro LIKE N'%GAP%' 
+	OR Ent_intro LIKE N'%疫苗%' 
+	OR Ent_intro LIKE N'%制药%' 
+	OR Ent_intro LIKE N'%中药材%' 
+	OR Ent_intro LIKE N'%仿制药%' 
+	) AS t UNION
+SELECT
+	'新材料产业' AS 行业类别,
+	COUNT ( DISTINCT ( t.企业 ) ) AS 企业数量,
+	COUNT ( DISTINCT ( t.招聘职位 ) ) AS 招聘职位数量,
+	SUM ( t.招聘人数 ) AS 招聘人数 
+FROM
+	(
+	SELECT DISTINCT
+		TB_BC_EntInfo.Ent_SN AS 企业,
+		TB_BC_JobOffer.JobSn AS 招聘职位,
+		TB_BC_JobOffer.Job_People_Count AS 招聘人数 
+	FROM
+		dbo.TB_BC_EntInfo
+		INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn 
+	WHERE
+	Ent_intro LIKE N'%锂%' 
+	OR Ent_intro LIKE N'%电池%' 
+	OR Ent_intro LIKE N'%贵金属%' 
+	OR Ent_intro LIKE N'%磷酸铁锂%' 
+	OR Ent_intro LIKE N'%铝塑膜%' 
+	OR Ent_intro LIKE N'%锡%' 
+	OR Ent_intro LIKE N'%钛%' 
+	OR Ent_intro LIKE N'%光电子%' 
+	OR Ent_intro LIKE N'%镓%' 
+	OR Ent_intro LIKE N'%液态金属%' 
+	OR Ent_intro LIKE N'%半导体%' 
+	OR Ent_intro LIKE N'%新材料%'
+	) AS t UNION
+SELECT
+	'烟草产业' AS 行业类别,
+	COUNT ( DISTINCT ( t.企业 ) ) AS 企业数量,
+	COUNT ( DISTINCT ( t.招聘职位 ) ) AS 招聘职位数量,
+	SUM ( t.招聘人数 ) AS 招聘人数 
+FROM
+	(
+	SELECT DISTINCT
+		TB_BC_EntInfo.Ent_SN AS 企业,
+		TB_BC_JobOffer.JobSn AS 招聘职位,
+		TB_BC_JobOffer.Job_People_Count AS 招聘人数 
+	FROM
+		dbo.TB_BC_EntInfo
+		INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn 
+	WHERE
+	Ent_intro LIKE N'%烟叶%' 
+	OR Ent_intro LIKE N'%烟机%' 
+	OR Ent_intro LIKE N'%卷烟%' 
+	OR Ent_intro LIKE N'%烟草%' 
+	OR Ent_intro LIKE N'%烤烟%' 
+	OR Ent_intro LIKE N'%烟草科学%' 
+	OR Ent_intro LIKE N'%降焦减害%' 
+	) AS t UNION
+SELECT
+	'绿色能源产业' AS 行业类别,
+	COUNT ( DISTINCT ( t.企业 ) ) AS 企业数量,
+	COUNT ( DISTINCT ( t.招聘职位 ) ) AS 招聘职位数量,
+	SUM ( t.招聘人数 ) AS 招聘人数 
+FROM
+	(
+	SELECT DISTINCT
+		TB_BC_EntInfo.Ent_SN AS 企业,
+		TB_BC_JobOffer.JobSn AS 招聘职位,
+		TB_BC_JobOffer.Job_People_Count AS 招聘人数 
+	FROM
+		dbo.TB_BC_EntInfo
+		INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn 
+	WHERE
+	Ent_intro LIKE N'%绿色能源%' 
+	OR Ent_intro LIKE N'%能源%' 
+	OR Ent_intro LIKE N'%清洁能源%' 
+	OR Ent_intro LIKE N'%水电%' 
+	OR Ent_intro LIKE N'%可再生能源%' 
+	OR Ent_intro LIKE N'%电网%' 
+	OR Ent_intro LIKE N'%煤电%' 
+	OR Ent_intro LIKE N'%页岩气%' 
+	OR Ent_intro LIKE N'%储能%' 
+	OR Ent_intro LIKE N'%蓄能%' 
+	) AS t UNION
+SELECT
+	'高端制造产业' AS 行业类别,
+	COUNT ( DISTINCT ( t.企业 ) ) AS 企业数量,
+	COUNT ( DISTINCT ( t.招聘职位 ) ) AS 招聘职位数量,
+	SUM ( t.招聘人数 ) AS 招聘人数 
+FROM
+	(
+	SELECT DISTINCT
+		TB_BC_EntInfo.Ent_SN AS 企业,
+		TB_BC_JobOffer.JobSn AS 招聘职位,
+		TB_BC_JobOffer.Job_People_Count AS 招聘人数 
+	FROM
+		dbo.TB_BC_EntInfo
+		INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn 
+	WHERE
+	Ent_intro LIKE N'%制造%' 
+	OR Ent_intro LIKE N'%磷%' 
+	OR Ent_intro LIKE N'%硅%' 
+	OR Ent_intro LIKE N'%变压器%' 
+	OR Ent_intro LIKE N'%电机%' 
+	OR Ent_intro LIKE N'%风电%' 
+	OR Ent_intro LIKE N'%电力%' 
+	OR Ent_intro LIKE N'%机床%' 
+	OR Ent_intro LIKE N'%车床%' 
+	OR Ent_intro LIKE N'%光机%' 
+	OR Ent_intro LIKE N'%数控%' 
+	OR Ent_intro LIKE N'%物流%' 
+	OR Ent_intro LIKE N'%自动化物流装备%' 
+	OR Ent_intro LIKE N'%铁路养护装备%' 
+	OR Ent_intro LIKE N'%农机装备%' 
+	OR Ent_intro LIKE N'%内燃机%' 
+	OR Ent_intro LIKE N'%电子设备%' 
+	OR Ent_intro LIKE N'%节能环保%'
+	) AS t UNION
+SELECT
+	'绿色铝产业' AS 行业类别,
+	COUNT ( DISTINCT ( t.企业 ) ) AS 企业数量,
+	COUNT ( DISTINCT ( t.招聘职位 ) ) AS 招聘职位数量,
+	SUM ( t.招聘人数 ) AS 招聘人数 
+FROM
+	(
+	SELECT DISTINCT
+		TB_BC_EntInfo.Ent_SN AS 企业,
+		TB_BC_JobOffer.JobSn AS 招聘职位,
+		TB_BC_JobOffer.Job_People_Count AS 招聘人数 
+	FROM
+		dbo.TB_BC_EntInfo
+		INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn 
+	WHERE
+Ent_intro LIKE N'%铝%' 
+	) AS t UNION
+SELECT
+	'光伏之都产业' AS 行业类别,
+	COUNT ( DISTINCT ( t.企业 ) ) AS 企业数量,
+	COUNT ( DISTINCT ( t.招聘职位 ) ) AS 招聘职位数量,
+	SUM ( t.招聘人数 ) AS 招聘人数 
+FROM
+	(
+	SELECT DISTINCT
+		TB_BC_EntInfo.Ent_SN AS 企业,
+		TB_BC_JobOffer.JobSn AS 招聘职位,
+		TB_BC_JobOffer.Job_People_Count AS 招聘人数 
+	FROM
+		dbo.TB_BC_EntInfo
+		INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn 
+	WHERE
+Ent_intro LIKE N'%光伏%' 
+	) AS t UNION
+SELECT
+	'高原特色现代农业产业' AS 行业类别,
+	COUNT ( DISTINCT ( t.企业 ) ) AS 企业数量,
+	COUNT ( DISTINCT ( t.招聘职位 ) ) AS 招聘职位数量,
+	SUM ( t.招聘人数 ) AS 招聘人数 
+FROM
+	(
+	SELECT DISTINCT
+		TB_BC_EntInfo.Ent_SN AS 企业,
+		TB_BC_JobOffer.JobSn AS 招聘职位,
+		TB_BC_JobOffer.Job_People_Count AS 招聘人数 
+	FROM
+		dbo.TB_BC_EntInfo
+		INNER JOIN dbo.TB_BC_JobOffer ON TB_BC_EntInfo.Ent_SN = TB_BC_JobOffer.EntSn 
+	WHERE
+	Ent_intro LIKE N'%绿色农业%' 
+	OR Ent_intro LIKE N'%化肥%' 
+	OR Ent_intro LIKE N'%猪%' 
+	OR Ent_intro LIKE N'%农药%' 
+	OR Ent_intro LIKE N'%花卉%' 
+	OR Ent_intro LIKE N'%茶叶%' 
+	OR Ent_intro LIKE N'%水果%' 
+	OR Ent_intro LIKE N'%坚果%' 
+	OR Ent_intro LIKE N'%咖啡%' 
+	OR Ent_intro LIKE N'%中药材%' 
+	OR Ent_intro LIKE N'%牛羊%' 
+	OR Ent_intro LIKE N'%乡村旅游%' 
+	OR Ent_intro LIKE N'%烟草%' 
+	OR Ent_intro LIKE N'%甘蔗%' 
+	OR Ent_intro LIKE N'%天然橡胶%' 
+	OR Ent_intro LIKE N'%绿色食品%' 
+	OR Ent_intro LIKE N'%食用菌%'
+	) AS t 
+
